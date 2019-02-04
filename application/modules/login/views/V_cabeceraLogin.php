@@ -1,32 +1,29 @@
-  <!DOCTYPE html>
-  <html lang="es" >
-  	<!-- begin::Head -->
-  	<head>
-  		<meta charset="utf-8" />
-  		<title>
-  			 Sistema de Gesti&oacute;n Administrativa
-  		</title>
-  		<meta name="description" content="">
-  		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-  		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <!--begin::Web font -->
-      <script src="<?php echo base_url() . 'plantilla/js/webfont.js'; ?>"></script>
-      <script>
-            WebFont.load({
-              google: {"families":["Poppins:300,400,500,600,700","Roboto:300,400,500,600,700"]},
-              active: function() {
-                  sessionStorage.fonts = true;
-              }
-            });
-      </script>
-      <!--end::Web font -->
-      <!--begin::Base Styles -->
-      <link href="<?php echo base_url() . 'plantilla/css/vendors.bundle.css'; ?>" rel="stylesheet" type="text/css"/>
-      <link href="<?php echo base_url() . 'plantilla/css/style.bundle.css'; ?>" rel="stylesheet" type="text/css"/>
-      <link rel="shortcut icon" href="<?php echo base_url() . 'plantilla/img/logo/logo.png'; ?>" />
-  	</head>
-  	<!-- end::Head -->
-    <!-- end::Body -->
-  	<body  class="m--skin- m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
-      <!-- onload="nobackbutton();oncontextmenu='return false'" -->
-    	<!-- begin:: Page -->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>MDH | 2019</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="<?php echo base_url(). 'plantilla/bower_components/bootstrap/dist/css/bootstrap.min.css'?>">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="<?php echo base_url(). 'plantilla/bower_components/font-awesome/css/font-awesome.min.css'?>">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="<?php echo base_url(). 'plantilla/bower_components/Ionicons/css/ionicons.min.css'?>">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="<?php echo base_url(). 'plantilla/dist/css/AdminLTE.min.css'?>">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="<?php echo base_url(). 'plantilla/plugins/iCheck/square/blue.css'?>">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>

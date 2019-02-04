@@ -1,19 +1,17 @@
-<!--begin::Base Scripts -->
-<script src="<?php echo base_url() . 'plantilla/js/vendors.bundle.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'plantilla/js/scripts.bundle.js'; ?>" type="text/javascript"></script>
-<!--end::Base Scripts -->
-  <!--begin::Page Snippets -->
-<script src="<?php echo base_url() . 'plantilla/js/login.js'; ?>" type="text/javascript"></script>
-<!--end::Page Snippets -->
+<!-- jQuery 3 -->
+<script src="<?php echo base_url(). 'plantilla/bower_components/jquery/dist/jquery.min.js'?>"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="<?php echo base_url(). 'plantilla/bower_components/bootstrap/dist/js/bootstrap.min.js'?>"></script>
+<!-- iCheck -->
+<script src="<?php echo base_url(). 'plantilla/plugins/iCheck/icheck.min.js'?>"></script>
 <script>
-    jQuery(document).ready(function () {
-        if (!("V_login" in document.createElement("input")))
-        {
-            $("#username").focus();
-        }
-
+  $(function () {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue',
+      increaseArea: '20%' /* optional */
     });
+  });
 </script>
 </body>
-<!-- end::Body -->
 </html>

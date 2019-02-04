@@ -2,7 +2,7 @@ RewriteEngine On
 # Comprueba si el usuario intenta acceder a un archivo válido, como un documento de imagen o css, si esto no es cierto que envía la petición a index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /esell/index.php/$1 [L]
+RewriteRule ^(.*)$ /interno/index.php/$1 [L]
 
 # Si no tiene instalado el mod_rewrite, todos de 404 puede ser enviado a index.php, y todo funciona con normalidad.
-ErrorDocument 404 /esell/index.php
+ErrorDocument 404 /interno/index.php
