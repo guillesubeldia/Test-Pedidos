@@ -93,10 +93,47 @@ public function RecuperarElemento(){
     }
 }
 
+public function MovimientoPedido($idPedido){
+    $this->db->select("tp.descripcion AS tipopedido,
+    tmov.descripcion AS tipomovimiento,
+    ep.descripcion AS estadopedido,
+    DATE_FORMAT(mp.fechamovimiento, '%d/%m/%Y %H:%i') AS fechamovimiento,mp.id_movimientopedido,
+    dest.descripcion AS 'dependenciadestino'");
+    $this->db->from("pedido AS p");
+    $this->db->join("tipopedido AS tp","tp.id_tipopedido = p.id_tipopedido");
+    $this->db->join("movimientopedido AS mp","mp.id_pedido = p.id_pedido");
+    $this->db->join("tipomovimiento AS tmov","tmov.id_tipomovimiento = mp.id_tipomovimiento");
+    
+    $this->db->join("estadopedido AS ep","ep.id_estadopedido = mp.id_estadopedido");
+    $this->db->join("dependencia AS dest","dest.id_dependencia = mp.dependenciadestino");
+    $this->db->where("p.activo",1);
+    $this->db->where("mp.activo",1);
+    $this->db->where("p.id_pedido", $idPedido);
+
+   return  $this->db->get()->result();
+}
+
+public function DatosMovimiento($id){
+    $this->db->select("p.id_pedido, p.titulo, p.fechaalta, dep.descripcion AS dependencia, tp.descripcion AS tipopedido");
+    $this->db->from("pedido AS p");
+    $this->db->join("dependencia AS dep","p.dependenciaorigen = dep.id_dependencia");
+    $this->db->join("tipopedido AS tp","p.id_tipopedido = tp.id_tipopedido");
+    $this->db->where("p.id_pedido",$id);
+    $this->db->where("p.activo",1);
+    $consulta = $this->db->get();
+    if (count($consulta->result()) > 0) {
+      $data['status'] = 'ok';
+      $data['result'] = $consulta->result();
+    } else {
+      $data['status'] = 'err';
+      $data['result'] = '';
+    }
+    echo json_encode($data);
+  }
 
 
-
-
+/////////////////////////////////ALTAS Y MODIFICACIONES//////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
 public function AltaPedido($datosPedido){
     $this->db->trans_begin();
     //inserto todo el contenido del pedido

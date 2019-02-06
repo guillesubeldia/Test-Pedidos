@@ -81,8 +81,8 @@
                     echo '<td style="vertical-align:middle;">' . $descripcionRecortado. '</td>';
                     echo '<td>';
                       echo '<a class="btn btn-primary" title="Editar datos." href="#" onclick="ModalEditar('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Editar</a> ';
-                      echo '<a class="btn btn-info" title="Ver pedido completo." href="#" onclick="ModalEditar('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Ver</a> ';      
-                      echo '<a class="btn btn-success" title="Ver movimientos del pedido." href="#" onclick="ModalEditar('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Movimientos</a> ';
+                      echo '<a class="btn btn-info" title="Ver pedido completo." href="#" onclick="ModalVer('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Ver</a> ';      
+                      echo '<a class="btn btn-success" title="Ver movimientos del pedido." href="#" onclick="MovimientosPedidos('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Movimientos</a> ';
                     echo '</td>';
                     echo '</tr>';
                   }
@@ -92,6 +92,163 @@
             </div>
           </div>
           <!-- /.box-body -->
+
+
+<div class="modal fade" id="modalMovimientos">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Movimientos del Pedido</h4>
+    </div>
+    <div class="modal-body">
+
+    <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Titulo</label>
+            <input type="text" id="tituloPedido" class="form-control">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Fecha Ingreso</label>
+            <input type="text" id="fechaAlta" class="form-control">
+          </div>
+        </div>
+      </div> 
+
+
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Dependencia Origen</label>
+            <input type="text" id="dependenciaOrigen" class="form-control">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Tipo Pedido</label>
+            <input type="text" id="tipoPedido" class="form-control">
+          </div>
+        </div>
+      </div> 
+      
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button type="button" aling="center" onclick="NuevoMovimiento()" class="btn btn-success">Nuevo Movimiento</button>
+        </div>
+        
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-12" id="tablaMovimiento">
+
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+      <button type="button" class="btn btn-primary">Save changes</button>
+    </div>
+  </div>
+  <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- MODAL PARA AGREGAR MOVIMIENTO -->
+
+<div class="modal fade" id="modalNuevoMovimiento">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+      <h4 class="modal-title">Movimientos del Pedido</h4>
+    </div>
+    <div class="modal-body">
+
+    <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Estado Movimiento</label>
+            <select class="form-control" name="slctEstadoMovimiento" required>
+            <?php foreach($estadoPedido as $row) : 
+              if($row->id_estadopedido == 2){
+                echo "<option value='".$row->id_estadopedido."' selected>".$row->descripcion . "</option>";
+              }
+              echo "<option value='".$row->id_estadopedido."'>".$row->descripcion . "</option>";
+            endforeach;
+            ?>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Fecha Movimiento</label>
+            <input type="date" id="fechaMovimiento" class="form-control">
+          </div>
+        </div>
+      </div> 
+
+      <div class="row">
+        <div class="col-md-12">
+        <div class="form-group">
+            <label>Dependencia Destino</label>
+            <select class="form-control" name="slctDestino" required>
+            <?php foreach($dependencia as $row) : 
+              echo "<option value='".$row->id_dependencia."'>".$row->descripcion . "</option>";
+            endforeach;
+            ?>
+            </select>
+          </div>
+        </div>
+      </div>      
+
+      
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+      <button type="button" class="btn btn-primary">Cargar</button>
+    </div>
+  </div>
+  <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+
+<!-- MODAL VER -->
+<div class="modal modal-info fade" id="modalVer">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Info Modal</h4>
+              </div>
+              <div class="modal-body">
+                <p>One fine body&hellip;</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline">Save changes</button>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+<!-- MODAL VER -->
+
         </div>
         <!-- /.box -->
 
@@ -145,17 +302,57 @@ $(document).ready(function() {
     });
 
 
-window.onload = function() {
-  BuscarPorParametros();
-}
-function BuscarPorParametros() {
-  console.log("entra");
-  $.post("<?php echo base_url();?>pedidos/C_pedidos/LeerPedidos",
-  {},
-    function(data) {
-      document.getElementById('consultaDinamica').innerHTML = data; //Se muestra el resultado
-      // document.getElementById('consultaDinamica').style.display = "block";
+// window.onload = function() {
+//   BuscarPorParametros();
+// }
+// function BuscarPorParametros() {
+//   console.log("entra");
+//   $.post("<?php echo base_url();?>pedidos/C_pedidos/LeerPedidos",
+//   {},
+//     function(data) {
+//       document.getElementById('consultaDinamica').innerHTML = data; //Se muestra el resultado
+//       // document.getElementById('consultaDinamica').style.display = "block";
     
+//   });
+// }
+
+function MovimientosPedidos($id){
+  //alert($id);
+  $("#modalMovimientos").modal();
+  idPedido = $id;
+  console.log(idPedido);
+//carga la tabla
+  $.post("<?php echo base_url() ?>/Pedidos/C_Pedidos/TablaMovimientos",
+  {idPedido : idPedido},
+    function(data) {
+      document.getElementById('tablaMovimiento').innerHTML = data; //Se muestra el resultado
+      document.getElementById('tablaMovimiento').style.display = "block";
+    });
+  //carga los box con la informacion del pedido
+  $.ajax({
+      type:'POST',
+      url:"<?php echo base_url() . '/Pedidos/C_Pedidos/DatosMovimiento';?>",
+      dataType: "json",
+      data:{idPedido:idPedido},
+      success:function(data){
+          if(data.status == 'ok'){
+            $('#tituloPedido').val(data.result[0].titulo);
+            $('#fechaAlta').val(data.result[0].fechaalta);
+            $('#dependenciaOrigen').val(data.result[0].dependencia);
+            $('#tipoPedido').val(data.result[0].tipopedido);
+          }else{
+            console.log("error");
+              alert("Ocurrio un problema");
+          }
+      }
   });
+}
+
+function NuevoMovimiento(){
+  $("#modalNuevoMovimiento").modal();
+}
+
+function ModalVer(){
+  $("#modalVer").modal();
 }
 </script>

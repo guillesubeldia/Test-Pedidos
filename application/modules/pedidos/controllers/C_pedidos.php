@@ -14,6 +14,8 @@ class C_pedidos extends MX_Controller {
 
 public function index(){
   $datos["pedidos"] = $this->M_pedidos->RecuperarPedidos();
+  $datos["estadoPedido"] = $this->M_pedidos->RecuperarEstado();
+  $datos["dependencia"] = $this->M_pedidos->RecuperarDependencias();
   $this->load->view('plantilla/V_cabecera');
   $this->load->view('plantilla/V_menu');
   $this->load->view('pedidos/V_tablaPedidos',$datos);
@@ -130,4 +132,53 @@ public function RegistrarPedido(){
   redirect(base_url() . "/producto/C_producto/GestionarProductoServicio");
 }
 
+
+public function TablaMovimientos(){
+ $idPedido = $this->input->post("idPedido");
+  //$idPedido = 3 ;
+  $movimientos = $this->M_pedidos->MovimientoPedido($idPedido);
+  
+  echo '<table id="tablaMovimientoPedidos" class="table table-bordered table-hover">';
+          // echo '<div class="row">';
+          //   echo '<div class="col-md-2">';
+          //     echo '<div class="btn-group">';
+          //       echo '<a href="'.base_url().'Pedidos/C_pedidos/CargarPedido'.'" class="btn btn-block btn-info"><i class="fa fa-plus"></i> Nuevo Movimiento
+          //                   </a>';
+          //     echo '</div>';
+          //   echo '</div>';
+          // echo '</div>';
+    echo '<br>';
+            echo '<thead>';
+              echo '<tr>';
+                echo '<th style="text-align: center;">Fecha Movimiento</th>';
+                echo '<th style="text-align: center;">Estado</th>';
+                echo '<th>Dependencia Destino</th>';
+                echo '<th>Acciones?</th>';
+              echo '</tr>';
+            echo '</thead>';
+            echo '<tbody>';
+  foreach($movimientos as $row){
+    if ($row === end($movimientos)) {
+      $acciones =  '<a class="btn btn-danger" title="Editar datos." href="#" onclick="FinalizarMovimiento('.$row->id_movimientopedido.')" role="button"><i class="la la-pencil"></i>Finalizar</a> ';
+    }else{
+      $acciones =  '<a class="btn btn-primary" title="Editar datos." href="#" onclick="EditarMovimiento('.$row->id_movimientopedido.')" role="button"><i class="la la-pencil"></i>Editar</a> ';
+    }
+
+      echo '<tr>';
+      
+        echo '<td style="vertical-align:middle;"><center>' . $row->fechamovimiento . '</center></td>';
+        echo '<td style="vertical-align:middle;">' . $row->estadopedido . '</td>';
+        echo '<td style="vertical-align:middle;">' . $row->dependenciadestino . '</td>';
+        echo '<td><center>'.$acciones.'</center></td>';
+      echo '</tr>';
+  }
+    //Armar un buen body con todos los datos a cargar dentro del modal, data table incluida 
+    echo  '</tbody>';
+    echo '</table>';
+}
+
+public function DatosMovimiento(){
+  $id = $this->input->post("idPedido");
+  $this->M_pedidos->DatosMovimiento($id);
+}
 }

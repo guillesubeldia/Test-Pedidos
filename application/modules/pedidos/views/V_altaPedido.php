@@ -93,9 +93,9 @@
                             <select class="form-control" name="slcElemento[]" tabindex="1">
                             <option value='' selected disabled>Seleccione ...</option>
                             <?php foreach($elemento as $row) : 
-                            echo "<option value='".$row->id_elemento."'>".$row->descripcion . "</option>";
-                          endforeach;
-                          ?>
+                              echo "<option value='".$row->id_elemento."'>".$row->descripcion . "</option>";
+                            endforeach;
+                            ?>
                             </select>
                           </td>
                           <td> <input type="text" name="txtCantidad[]" class="form-control"> </td>
