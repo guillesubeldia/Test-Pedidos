@@ -1,4 +1,20 @@
+<?php
+foreach($datosPedido as $row):
+    $idPedido               = $row->id_pedido;
+    $tituloPedido           = $row->titulo;
+    $descripcionPedido      = $row->descripcion;
+    $tipoPedido             = $row->id_tipopedido;
+    $descirpcionTipoPedido  = $row->tipopedido;
+    $dependencia            = $row->id_dependencia;
+    $descripcionDependencia = $row->dependenciaorigen;
+endforeach;
 
+ if (!empty($elementosPedido)) {
+    $estado="block";
+ }else{
+    $estado="none";
+ }
+?>
 <!-- INICIO CUERPO -->
 <div class="content-wrapper">
   <div class="content-header">
@@ -20,7 +36,8 @@
           </div>
           <div class="box-body">
             <!-- INICIO FORMULARIO DE REGISTRO DE pedidos -->
-            <form role="form" method="post" id="form-pedido" action="<?php echo base_url() . 'pedidos/C_pedidos/RegistrarPedido'?>">
+            <form role="form" method="post" id="form-pedido" action="<?php echo base_url() . 'pedidos/C_pedidos/ActualizarPedido'?>">
+              <input type="hidden" value="<?php echo $idPedido;?>" name="idPedido">
               <div class="row">
                 <div class="col-md-12">
                 
@@ -29,8 +46,8 @@
                       <div class="form-group">
                         <label for="">Tipo Pedido</label>
                         <select name="slcTipoPedido" onChange="TipoPedido(this)" class="form-control">
-                        <option value="" selected disabled>Seleccione..</option>
-                          <?php foreach($tipoPedido as $row) : 
+                        <option value="<?php echo $tipoPedido;?>" selected><?php echo $descirpcionTipoPedido;?></option>
+                          <?php foreach($tipoPedidoArray as $row) : 
                             echo "<option value='".$row->id_tipopedido."'>".$row->descripcion . "</option>";
                           endforeach;
                           ?>
@@ -41,12 +58,12 @@
 
                   <div class="form-group">
                     <label for="">Titulo (*)</label>
-                    <input type="text" name="txtTitulo" class="form-control">
+                    <input type="text" name="txtTitulo" value="<?php echo $tituloPedido;?>" class="form-control">
                   </div>
 
                   <div class="form-group">
                     <label for="">Descripcion (*)</label>
-                    <textarea type="text" name="txtDescripcion" class="form-control"></textarea>
+                    <textarea type="text" name="txtDescripcion" value="<?php echo $descripcionPedido;?>" class="form-control"></textarea>
                   </div>
 
                   <div class="row">
@@ -54,26 +71,22 @@
                       <div class="form-group">
                         <label for="">Dependencia de Origen</label>
                         <select name="slcDependencia" class="form-control">
-                        <option value="" selected disabled>Seleccione..</option>
-                          <?php foreach($dependencia as $row) : 
+                        <option value="<?php echo $dependencia;?>" selected><?php echo $descripcionDependencia;?></option>
+                          <?php foreach($dependenciaArray as $row) : 
                             echo "<option value='".$row->id_dependencia."'>".$row->descripcion . "</option>";
                           endforeach;
                           ?>
                         </select>
                       </div>
                     </div>
-                  </div>
-
-                
-
-                 
+                  </div>                 
                 </div>
               </div>
 
            
 
               <div class="row" >
-                <div class="col-md-12" id="divElementos" style="display:none">
+                <div class="col-md-12" id="divElementos" style="display:<?php echo $estado;?>">
                   <hr>
                   <h4>Lista de Elementos del Pedido</h4>
                   <hr>
@@ -89,6 +102,31 @@
                       </thead>
                       <tbody>
                         <tr>
+                        <?php 
+                        $pos = 1;
+                        if (!empty($elementosPedido)) {
+                            
+                            $pos = 1;
+                            foreach($elementosPedido as $fila){
+                                echo "<tr>";
+                                echo "<td>";
+                                echo "<input type='hidden' name='idElemento[".$pos."]' value='".$fila->id_detallepedido."'>";
+                                    echo "<select class='form-control' name='slcElemento[".$pos."]' tabindex='1'>";
+                                        echo "<option value='".$fila->id_elemento."' selected>".$fila->nombreelemento."</option>";
+                                        foreach($elemento as $row) : 
+                                            echo "<option value='".$row->id_elemento."'>".$row->descripcion . "</option>";
+                                        endforeach;
+                                    echo "</select>";
+                                echo "</td>";
+                                echo "<td> <input type='text' name='txtCantidad[".$pos."]' value='".$fila->cantidad."' class='form-control'> </td>";
+                                echo "<td> <input type='text' name='txtObservacion[".$pos."]' value='".$fila->observacion."' class='form-control'> </td>";
+                                echo "<td> <button type='button' class='btn btn-danger' onclick='EliminarElemento(this)'>Eliminar</button> </td>";
+                                $pos++;
+                                echo "</tr>";
+                            }
+                        }
+                        ?>
+
                           <td>
                             <select class="form-control" name="slcElemento[]" tabindex="1">
                             <option value='' selected disabled>Seleccione ...</option>
@@ -111,18 +149,7 @@
                   </button>
                 </div>
               </div>
-
-              
-             
-             
-             
-             
-             
-             
-             
-             
-             
-              </div>
+            </div>
 
 
 
@@ -163,8 +190,7 @@ function agregarElemento(data) {
       agregarCampo(data);
   });
 }
-
-var posicionCampo = 1;
+var posicionCampo = <?php echo $pos;?>;
 //function agregarElemento(data) {
  function agregarCampo(data){ 
 

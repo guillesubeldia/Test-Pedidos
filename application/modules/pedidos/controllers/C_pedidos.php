@@ -16,6 +16,7 @@ public function index(){
   $datos["pedidos"] = $this->M_pedidos->RecuperarPedidos();
   $datos["estadoPedido"] = $this->M_pedidos->RecuperarEstado();
   $datos["dependencia"] = $this->M_pedidos->RecuperarDependencias();
+  $datos["tipoMovimiento"] = $this->M_pedidos->RecuperarTipoMovimiento();
   $this->load->view('plantilla/V_cabecera');
   $this->load->view('plantilla/V_menu');
   $this->load->view('pedidos/V_tablaPedidos',$datos);
@@ -129,7 +130,7 @@ public function RegistrarPedido(){
     //u error
   }
   //si no entra en el if, quiere decir que no tenia elementos para agregar
-  redirect(base_url() . "/producto/C_producto/GestionarProductoServicio");
+  redirect(base_url() . "/pedido/C_pedido/");
 }
 
 
@@ -153,15 +154,15 @@ public function TablaMovimientos(){
                 echo '<th style="text-align: center;">Fecha Movimiento</th>';
                 echo '<th style="text-align: center;">Estado</th>';
                 echo '<th>Dependencia Destino</th>';
-                echo '<th>Acciones?</th>';
+                echo '<th>Acciones</th>';
               echo '</tr>';
             echo '</thead>';
             echo '<tbody>';
   foreach($movimientos as $row){
     if ($row === end($movimientos)) {
-      $acciones =  '<a class="btn btn-danger" title="Editar datos." href="#" onclick="FinalizarMovimiento('.$row->id_movimientopedido.')" role="button"><i class="la la-pencil"></i>Finalizar</a> ';
+      $acciones =  '<a class="btn btn-danger" title="Finalizar" href="#" onClick="FinalizarMovimiento('.$row->id_pedido.')" role="button"><i class="la la-pencil"></i>Finalizar</a> ';
     }else{
-      $acciones =  '<a class="btn btn-primary" title="Editar datos." href="#" onclick="EditarMovimiento('.$row->id_movimientopedido.')" role="button"><i class="la la-pencil"></i>Editar</a> ';
+      $acciones =  '<a class="btn btn-primary" title="Editar datos." href="#" onClick="EditarMovimiento('.$row->id_pedido.')" role="button"><i class="la la-pencil"></i>Editar</a> ';
     }
 
       echo '<tr>';
@@ -181,4 +182,102 @@ public function DatosMovimiento(){
   $id = $this->input->post("idPedido");
   $this->M_pedidos->DatosMovimiento($id);
 }
+
+public function NuevoMovimiento(){
+
+  $datosMovimiento = array(
+   'id_estadopedido'    => $this->input->post('slctEstadoMovimiento'),
+   'fechamovimiento'    => $this->input->post('fechaMovimiento'),
+   'id_pedido'          => $this->input->post('idPedido'),
+   'id_tipomovimiento'  => $this->input->post('slctTipoMovimiento'),
+   'dependenciadestino' => $this->input->post('slctDestino')
+ );
+
+ $this->M_pedidos->AltaMovimientos($datosMovimiento);
+
+ redirect(base_url() . "/pedidos/C_pedidos/");
+}
+
+public function FinalizarMovimiento(){
+  $fechaCarga = date("Y-m-d H:i:s");
+  $datosMovimiento = array(
+    'id_estadopedido'    => 4, //finalizado
+    'fechamovimiento'    => $fechaCarga,
+    'id_pedido'          => $this->input->post('idPedido'),
+    'id_tipomovimiento'  => 4, //ciclo completado
+    'dependenciadestino' => 126 //mdh
+  );
+  $consulta = $this->M_pedidos->AltaMovimientos($datosMovimiento);
+  if ($consulta == true) {
+    $data['status'] = 'ok';
+    $data['result'] = 'ok';
+  } else {
+    $data['status'] = 'error';
+    $data['result'] = '';
+  }
+  echo json_encode($data);
+}
+
+public function EditarPedido($idPedido){
+  $datos["elementosPedido"] = $this->M_pedidos->ElementosPedido($idPedido);
+  $datos["datosPedido"] = $this->M_pedidos->DatosPedido($idPedido);
+  
+ // $datos["pedidos"] = $this->M_pedidos->RecuperarPedidos();
+ // $datos["estadoPedido"] = $this->M_pedidos->RecuperarEstado();
+  //$datos["tipoMovimiento"] = $this->M_pedidos->RecuperarTipoMovimiento();
+  $datos["tipoPedidoArray"] = $this->M_pedidos->RecuperarTipoPedido();
+  $datos["dependenciaArray"] = $this->M_pedidos->RecuperarDependencias();
+  $datos["elemento"] = $this->M_pedidos->RecuperarElemento();
+  $this->load->view('plantilla/V_cabecera');
+  $this->load->view('plantilla/V_menu');
+  $this->load->view('pedidos/V_editarPedido',$datos);
+  $this->load->view('plantilla/V_pie');
+}
+
+public function ActualizarPedido(){
+  $idPedido = $this->input->post("idPedido");
+  $tipoPedido = $this->input->post("slcTipoPedido");
+  $datosPedido = array(
+    'id_tipopedido'       =>  $tipoPedido,
+    'titulo'              =>  $this->input->post("txtTitulo"),
+    'descripcion'         =>  $this->input->post("txtDescripcion"),
+    'dependenciaorigen'   =>  $this->input->post("slcDependencia")
+  );
+  $this->M_pedidos->EditarPedido($datosPedido,$idPedido);
+  
+  $fechaCarga = date("Y-m-d H:i:s");
+  //si el tipo pedido no es de soporte, tiene elementos y se tienen que cargar
+  if($tipoPedido != 1 && !empty($this->input->post('slcElemento[]')) ){
+    foreach($this->input->post('slcElemento[]') as $key=>$value){
+      $elemento = $this->input->post('slcElemento[]')[$key];
+      $cantidad = $this->input->post('txtCantidad[]')[$key];
+      $observacion = $this->input->post('txtObservacion[]')[$key];
+
+    //Si no esta este dato, todos se van a insertar. Si esta solamente se va a actualizar
+    if(!empty($this->input->post('idElemento[]'))){
+      $idDetallePedido = $this->input->post('idElemento[]')[$key]; 
+      $pedidoElementos = array(
+        'id_pedido'       => $idPedido,
+        'id_elemento'     => $elemento,
+        'cantidad'        => $cantidad,
+        'observacion'     => $observacion,
+        'fecha'           => $fechaCarga
+        );
+        //aca hago el update con esos dos datos.
+        $this->M_pedidos->EditarPedidoDetalle($pedidoElementos, $idDetallePedido);
+    }else{
+      $pedidoElementos = array(
+        'id_pedido'       => $idPedido,
+        'id_elemento'     => $elemento,
+        'cantidad'        => $cantidad,
+        'observacion'     => $observacion,
+        'fecha'           => $fechaCarga
+        );
+        //aca voy a hacer el insert.
+        $this->M_pedidos->AltaElementos($pedidoElementos);
+    }
+  }
+}
+}
+
 }

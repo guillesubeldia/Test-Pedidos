@@ -94,7 +94,8 @@ public function RecuperarElemento(){
 }
 
 public function MovimientoPedido($idPedido){
-    $this->db->select("tp.descripcion AS tipopedido,
+    $this->db->select("p.id_pedido,
+    tp.descripcion AS tipopedido,
     tmov.descripcion AS tipomovimiento,
     ep.descripcion AS estadopedido,
     DATE_FORMAT(mp.fechamovimiento, '%d/%m/%Y %H:%i') AS fechamovimiento,mp.id_movimientopedido,
@@ -114,7 +115,7 @@ public function MovimientoPedido($idPedido){
 }
 
 public function DatosMovimiento($id){
-    $this->db->select("p.id_pedido, p.titulo, p.fechaalta, dep.descripcion AS dependencia, tp.descripcion AS tipopedido");
+    $this->db->select("p.id_pedido, p.titulo,p.descripcion, p.fechaalta, dep.descripcion AS dependencia, tp.descripcion AS tipopedido");
     $this->db->from("pedido AS p");
     $this->db->join("dependencia AS dep","p.dependenciaorigen = dep.id_dependencia");
     $this->db->join("tipopedido AS tp","p.id_tipopedido = tp.id_tipopedido");
@@ -131,7 +132,28 @@ public function DatosMovimiento($id){
     echo json_encode($data);
   }
 
+public function ElementosPedido($idPedido){
+    $this->db->select("dp.id_detallepedido, dp.id_elemento, e.descripcion AS nombreelemento, dp.cantidad, dp.observacion");
+    $this->db->from("detallepedido AS dp");
+    $this->db->join("elemento AS e","dp.id_elemento = e.id_elemento");
+    $this->db->where("dp.activo",1);
+    $this->db->where("dp.id_pedido",$idPedido);
 
+    return $this->db->get()->result();
+}
+
+public function DatosPedido($idPedido){
+    $this->db->select("p.id_pedido,p.titulo, p.descripcion, 
+    tp.id_tipopedido,tp.descripcion AS tipopedido,
+    dest.id_dependencia,dest.descripcion AS 'dependenciaorigen'");
+    $this->db->from("pedido AS p");
+    $this->db->join("tipopedido AS tp","tp.id_tipopedido = p.id_tipopedido");
+    $this->db->join("dependencia AS dest","dest.id_dependencia = p.dependenciaorigen");
+    $this->db->where("p.activo",1);
+    $this->db->where("p.id_pedido",$idPedido);
+    
+    return $this->db->get()->result();
+}
 /////////////////////////////////ALTAS Y MODIFICACIONES//////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 public function AltaPedido($datosPedido){
@@ -166,7 +188,7 @@ public function AltaPedido($datosPedido){
 public function AltaElementos($pedidoElementos){
     $this->db->trans_begin();
     //Cargo uno por uno los elementos que figuran dentro del detalle del pedido
-    $this->db->insert('detallepedido', $datosPedido);
+    $this->db->insert('detallepedido', $pedidoElementos);
     if($this->db->trans_status() === FALSE) {
         $this->db->trans_rollback();
         $this->db->trans_off();
@@ -177,6 +199,52 @@ public function AltaElementos($pedidoElementos){
         return TRUE;
     }
 }
+
+public function AltaMovimientos($datosMovimiento){
+    $this->db->trans_begin();
+    //Cargo uno por uno los elementos que figuran dentro del detalle del pedido
+    $this->db->insert('movimientopedido', $datosMovimiento);
+    if($this->db->trans_status() === FALSE) {
+        $this->db->trans_rollback();
+        $this->db->trans_off();
+        return FALSE;
+    }else {
+        $this->db->trans_commit();
+        $this->db->trans_off();
+        return TRUE;
+    }
+}
+
+public function EditarPedido($datosPedido,$id){
+$this->db->trans_begin();
+$this->db->where('id_pedido', $id);
+$this->db->update('pedido', $datosPedido);
+if($this->db->trans_status() === FALSE) {
+    $this->db->trans_rollback();
+    $this->db->trans_off();
+    return false;
+}else{
+    $this->db->trans_commit();
+    $this->db->trans_off();
+    return true;
+}
+}
+public function EditarPedidoDetalle($pedidoElementos, $idDetallePedido){
+    $this->db->trans_begin();
+    $this->db->where('id_detallepedido', $idDetallePedido);
+    $this->db->update('detallepedido', $pedidoElementos);
+    if($this->db->trans_status() === FALSE) {
+        $this->db->trans_rollback();
+        $this->db->trans_off();
+        return false;
+    }else{
+        $this->db->trans_commit();
+        $this->db->trans_off();
+        return true;
+    }
+}
+
+  
 
 
 }
