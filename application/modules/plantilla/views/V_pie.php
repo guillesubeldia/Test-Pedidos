@@ -39,9 +39,5 @@
     })
   })
 </script>
-
-<!-- LEGUIZAMON TOMASSI NICOLAS -->
-<!-- Script para el proyecto maradona -->
-<script src="<?php echo base_url() . 'js/maradona.js'?>" ></script>
 </body>
 </html>

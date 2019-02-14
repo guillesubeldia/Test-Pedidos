@@ -120,7 +120,7 @@ endforeach;
                                 echo "</td>";
                                 echo "<td> <input type='text' name='txtCantidad[".$pos."]' value='".$fila->cantidad."' class='form-control'> </td>";
                                 echo "<td> <input type='text' name='txtObservacion[".$pos."]' value='".$fila->observacion."' class='form-control'> </td>";
-                                echo "<td> <button type='button' class='btn btn-danger' onclick='EliminarElemento(this)'>Eliminar</button> </td>";
+                                echo "<td> <button type='button' class='btn btn-danger' onclick='EliminarDeLista(this,".$fila->id_detallepedido.")'>Eliminar</button> </td>";
                                 $pos++;
                                 echo "</tr>";
                             }
@@ -219,11 +219,6 @@ var posicionCampo = <?php echo $pos;?>;
   //agregarElemento();
 }
 
-
-
-
-
-
 /* Definimos la función EliminarElemento, la cual se encargará de quitar la fila completa del formulario. No es necesario hacer modificaciones sobre este código */
 function EliminarElemento(obj) {
   var oTr = obj;
@@ -232,5 +227,30 @@ function EliminarElemento(obj) {
   }
   var root = oTr.parentNode;
   root.removeChild(oTr);
+}
+
+function EliminarDeLista(obj,id){
+  idPedido = id;
+  $.ajax({
+      type:'POST',
+      url:"<?php echo base_url() . '/Pedidos/C_Pedidos/EliminarElemento';?>",
+      dataType: "json",
+      data:{idPedido:idPedido},
+      success:function(data){
+        console.log(idPedido);
+          if(data.status == 'ok'){
+           //si entra en la funcion, elimina la fila
+            var fila = obj;
+            while(fila.nodeName.toLowerCase() != 'tr') {
+                fila=fila.parentNode;
+            }
+            var root = fila.parentNode;
+            root.removeChild(fila);
+          }
+
+       }
+   });
+  
+  
 }
 </script>

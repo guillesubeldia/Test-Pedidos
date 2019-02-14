@@ -170,9 +170,14 @@ CREATE TABLE `detallepedido` (
   `fecha` datetime NOT NULL COMMENT 'fecha de carga del elemento',
   `activo` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_detallepedido`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `detallepedido` */
+
+insert  into `detallepedido`(`id_detallepedido`,`id_pedido`,`id_elemento`,`cantidad`,`observacion`,`fecha`,`activo`) values 
+(2,5,3,2,'el otro id es','2019-02-14 15:24:30',1),
+(3,5,3,3,'el tercer id es ','2019-02-14 15:24:30',1),
+(4,6,3,1,'asd','2019-02-11 17:28:49',1);
 
 /*Table structure for table `elemento` */
 
@@ -328,15 +333,22 @@ CREATE TABLE `movimientopedido` (
   `id_tipomovimiento` int(11) NOT NULL COMMENT 'que tipo de movimento es',
   `dependenciadestino` int(11) NOT NULL COMMENT 'a donde se hace el movimiento',
   `activo` int(11) NOT NULL DEFAULT '1',
+  `fechacarga` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_movimientopedido`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 /*Data for the table `movimientopedido` */
 
-insert  into `movimientopedido`(`id_movimientopedido`,`id_estadopedido`,`fechamovimiento`,`id_pedido`,`id_tipomovimiento`,`dependenciadestino`,`activo`) values 
-(1,1,'2019-01-30 10:55:23',1,1,16,1),
-(2,1,'2019-02-01 18:05:55',3,1,126,1),
-(3,1,'2019-02-01 18:05:55',3,1,100,1);
+insert  into `movimientopedido`(`id_movimientopedido`,`id_estadopedido`,`fechamovimiento`,`id_pedido`,`id_tipomovimiento`,`dependenciadestino`,`activo`,`fechacarga`) values 
+(1,1,'2019-01-30 10:55:23',1,1,16,1,'2019-02-07 10:47:01'),
+(2,1,'2019-02-01 18:05:55',3,1,126,1,'2019-02-07 10:47:01'),
+(3,2,'2019-02-21 18:05:55',3,1,100,1,'2019-02-07 10:47:01'),
+(4,2,'2019-02-28 00:00:00',3,3,11,1,'2019-02-07 12:25:39'),
+(5,4,'2019-02-07 17:41:23',1,4,126,1,'2019-02-07 13:41:23'),
+(18,4,'2019-02-07 17:57:40',3,4,126,1,'2019-02-07 13:57:40'),
+(19,1,'2019-02-08 14:26:14',4,1,126,1,'2019-02-08 10:26:14'),
+(20,1,'2019-02-08 14:26:55',5,1,126,1,'2019-02-08 10:26:55'),
+(21,1,'2019-02-11 17:28:48',6,1,126,1,'2019-02-11 13:28:48');
 
 /*Table structure for table `pedido` */
 
@@ -351,13 +363,16 @@ CREATE TABLE `pedido` (
   `dependenciaorigen` int(11) NOT NULL COMMENT 'Id de la dependencia donde se origina el pedido',
   `activo` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_pedido`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 /*Data for the table `pedido` */
 
 insert  into `pedido`(`id_pedido`,`id_tipopedido`,`fechaalta`,`titulo`,`descripcion`,`dependenciaorigen`,`activo`) values 
 (1,1,'2019-01-30 10:54:43','PEDIDO TEST','TEXTO DE PRUEBA PARA EL PEDIDO MORTAL DE PRUEBA QUE VOY A HACER AHORA MISMO ATR',12,1),
-(3,1,'2019-02-01 14:05:55','Soporte sigho','Test',14,1);
+(3,1,'2019-02-01 14:05:55','Soporte sigho','',17,1),
+(4,3,'2019-02-08 10:26:14','Equipos','Pedido de equipos',6,1),
+(5,3,'2019-02-08 10:26:55','edita3','',6,1),
+(6,3,'2019-02-11 13:28:48','123123','dsfsdffdfdsdsf',114,1);
 
 /*Table structure for table `perfil` */
 
@@ -403,7 +418,16 @@ insert  into `sessions`(`id`,`ip_address`,`timestamp`,`data`) values
 ('53g71cr81d03g69t7359r58uutp1q5uo','::1',1548778788,'__ci_last_regenerate|i:1548778563;|N;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"d033e22ae348aeb5660fc2140aec35850c4da997\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
 ('5sc2bqs0ommdmmv9cr43d0cl2d59s1u6','::1',1548866489,'__ci_last_regenerate|i:1548866454;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
 ('si006bsjb781rukeao5jbqe1i6cc4r6k','::1',1549286151,'__ci_last_regenerate|i:1549286079;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('h7n8ihnupdppbh6q2nc4ks9kbkf2pc6d','::1',1549296338,'__ci_last_regenerate|i:1549296336;');
+('h7n8ihnupdppbh6q2nc4ks9kbkf2pc6d','::1',1549296338,'__ci_last_regenerate|i:1549296336;'),
+('q8efoj3bulju3b3a38k6gf029v4sb6fs','::1',1549474739,'__ci_last_regenerate|i:1549474738;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
+('5mig7uv5pu86pd831m6lp4g7rihtld5b','::1',1549540266,'__ci_last_regenerate|i:1549540245;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
+('1uudb7meslgun7efrtavnq6vfkfngk93','::1',1549540714,'__ci_last_regenerate|i:1549540714;'),
+('re67tv7rhetq5flfand6qp6j6r4gd1m1','::1',1549544313,'__ci_last_regenerate|i:1549544313;'),
+('8gilf71grmcdd25gm01mphenrkmemqsr','::1',1549559411,'__ci_last_regenerate|i:1549559405;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
+('ktm16kfti4aua2atr1r17cete9f3dnup','127.0.0.1',1549640152,'__ci_last_regenerate|i:1549640133;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
+('dgji7c2ou0oua53jfk9pqpnqv0utjqoi','::1',1549971803,'__ci_last_regenerate|i:1549971800;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
+('9jgi12bahu03q106lkhveaueai70drho','::1',1549990072,'__ci_last_regenerate|i:1549989936;'),
+('4tpv0m6f1r70f3vk0uvg7si04ks4o1av','127.0.0.1',1550164707,'__ci_last_regenerate|i:1550164614;');
 
 /*Table structure for table `tipomovimiento` */
 
@@ -414,13 +438,15 @@ CREATE TABLE `tipomovimiento` (
   `descripcion` varchar(50) NOT NULL COMMENT 'descripcion del tipo de movimiento.',
   `activo` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_tipomovimiento`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 /*Data for the table `tipomovimiento` */
 
 insert  into `tipomovimiento`(`id_tipomovimiento`,`descripcion`,`activo`) values 
 (1,'NUEVO INGRESO',1),
-(2,'ORDEN DE COMPRA',1);
+(2,'ORDEN DE COMPRA',1),
+(3,'TRASLADO DE AREA',1),
+(4,'CICLO COMPLETADO',1);
 
 /*Table structure for table `tipopedido` */
 

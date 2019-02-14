@@ -4,7 +4,7 @@
            Subeldía, Guillermo Daniel.
  * Fecha ultima actualizacion: 30/01/2019
  */
-class M_pedidos extends CI_Model{
+class M_listado extends CI_Model{
     public function __construct(){
         parent::__construct();
 
@@ -155,113 +155,9 @@ public function DatosPedido($idPedido){
     
     return $this->db->get()->result();
 }
-/////////////////////////////////ALTAS Y MODIFICACIONES//////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////
-public function AltaPedido($datosPedido){
-    $this->db->trans_begin();
-    //inserto todo el contenido del pedido
-    $this->db->insert('pedido', $datosPedido);
-    $idPedido = $this->db->insert_id();
-    // creo el primer movimiento del pedido que es el ingreso
-    $fechaHoy = date("Y-m-d H:i:s");
-    $movimentoPedido = array(
-        'id_estadopedido'   => 1, //ingresado
-        'fechamovimiento'    => $fechaHoy,
-        'id_pedido'	        => $idPedido,
-        'id_tipomovimiento' => 1, //nuevo ingreso
-        'dependenciadestino'=> 126, //ministerio desarrollo humano
-        'activo'            => 1
-    );
-    $this->db->insert('movimientopedido',$movimentoPedido);
-
-    //si todo va correcto devuelvo el id del pedido, para usarlo
-    if($this->db->trans_status() === FALSE) {
-        $this->db->trans_rollback();
-        $this->db->trans_off();
-        return false;
-    }else {
-        $this->db->trans_commit();
-        $this->db->trans_off();
-        return $idPedido;
-    }
+public function RecuperarPedidosFecha(){
+    
 }
-
-public function AltaElementos($pedidoElementos){
-    $this->db->trans_begin();
-    //Cargo uno por uno los elementos que figuran dentro del detalle del pedido
-    $this->db->insert('detallepedido', $pedidoElementos);
-    if($this->db->trans_status() === FALSE) {
-        $this->db->trans_rollback();
-        $this->db->trans_off();
-        return FALSE;
-    }else {
-        $this->db->trans_commit();
-        $this->db->trans_off();
-        return TRUE;
-    }
-}
-
-public function AltaMovimientos($datosMovimiento){
-    $this->db->trans_begin();
-    //Cargo uno por uno los elementos que figuran dentro del detalle del pedido
-    $this->db->insert('movimientopedido', $datosMovimiento);
-    if($this->db->trans_status() === FALSE) {
-        $this->db->trans_rollback();
-        $this->db->trans_off();
-        return FALSE;
-    }else {
-        $this->db->trans_commit();
-        $this->db->trans_off();
-        return TRUE;
-    }
-}
-
-public function EditarPedido($datosPedido,$id){
-$this->db->trans_begin();
-$this->db->where('id_pedido', $id);
-$this->db->update('pedido', $datosPedido);
-if($this->db->trans_status() === FALSE) {
-    $this->db->trans_rollback();
-    $this->db->trans_off();
-    return false;
-}else{
-    $this->db->trans_commit();
-    $this->db->trans_off();
-    return true;
-}
-}
-public function EditarPedidoDetalle($pedidoElementos, $idDetallePedido){
-    $this->db->trans_begin();
-    $this->db->where('id_detallepedido', $idDetallePedido);
-    $this->db->update('detallepedido', $pedidoElementos);
-    if($this->db->trans_status() === FALSE) {
-        $this->db->trans_rollback();
-        $this->db->trans_off();
-        return false;
-    }else{
-        $this->db->trans_commit();
-        $this->db->trans_off();
-        return true;
-    }
-}
-
-//baja
-public function EliminarElemento($id){
-    $this->db->trans_begin();
-    $this->db->where('id_detallepedido', $id);
-    $this->db->delete('detallepedido');
-
-    if($this->db->trans_status() === FALSE) {
-        $this->db->trans_rollback();
-        $this->db->trans_off();
-        return false;
-    }else{
-        $this->db->trans_commit();
-        $this->db->trans_off();
-        return true;
-    }
-}
-  
 
 
 }

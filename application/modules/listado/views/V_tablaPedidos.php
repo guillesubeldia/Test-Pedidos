@@ -23,26 +23,37 @@
             <h3 class="box-title">Lista de Pedidos</h3>
           </div>
 
-
+          <form role="form" method="post" action="<?php echo base_url() . 'listado/C_listado/ListaFechas'?>">
           <!-- /.box-header -->
           <div class="box-body">
-            <?php if (isset($exito) && $exito == true): ?>
-            <div class="callout callout-success">
-              ¡La operaci&oacute;n se ha completado satisfactoriamente!
-            </div>
-            <?php endif ?>
+            
             <div class="table-toolbar">
               <table id="tablaPedidos" class="table table-bordered table-hover">
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="btn-group">
-                            <a href="<?php echo base_url().'Pedidos/C_pedidos/CargarPedido'?>" class="btn btn-block btn-info"><i class="fa fa-plus"></i> Nuevo Pedido
-                            </a>
-                        </div>
-                    </div>
-                    
-                    
-                </div>
+                 
+              
+                  <div class="row">
+                      <div class="col-md-4">
+                          <div class="input-group">
+                            <span class="input-group-addon">Fecha Desde</span>
+                            <input type="date" class="form-control" name="fechaDesde">
+                          </div>
+                      </div>
+
+                      <div class="col-md-4">
+                          <div class="input-group">
+                            <span class="input-group-addon">Hasta</span>
+                            <input type="date" class="form-control" name="fechaHasta">
+                          </div>
+                      </div>
+                  
+                      <div class="col-md-4">
+                          <div class="form-group">
+                            <button  type="submit" name="button" class="btn btn-primary pull-left" >Buscar</button>
+                          </div>
+                      </div>
+                  </div>
+                </form>
+
                 <br>
                 <thead>
                 <tr>
@@ -65,9 +76,7 @@
                     echo '<td style="vertical-align:middle;"><center>' . $pedido->titulo . '</center></td>';
                     echo '<td style="vertical-align:middle;">' . $descripcionRecortado. '</td>';
                     echo '<td>';
-                      echo '<a class="btn btn-primary" title="Editar datos." href="'.base_url().'Pedidos/C_pedidos/EditarPedido/'.$pedido->id_pedido.'" role="button"><i class="la la-pencil"></i>Editar</a> ';
                       echo '<a class="btn btn-info" title="Ver pedido completo." href="#" onclick="MovimientosPedidos('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Ver</a> ';      
-                      //echo '<a class="btn btn-success" title="Ver movimientos del pedido." href="#" onclick="MovimientosPedidos('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Movimientos</a> ';
                     echo '</td>';
                     echo '</tr>';
                   }
@@ -132,12 +141,7 @@
         </div>
       </div> 
       
-      <div class="row">
-        <div class="col-md-12 text-center">
-          <button type="button" aling="center" onclick="NuevoMovimiento()" class="btn btn-success">Nuevo Movimiento</button>
-        </div>
-        
-      </div>
+    
 
 
       <div class="row">

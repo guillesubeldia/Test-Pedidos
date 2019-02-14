@@ -35,41 +35,10 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="<?php echo base_url() . 'Alumnos/C_Alumnos/'?>"><i class="fa fa-circle-o"></i> Alumnos</a></li>
-            <li><a href="<?php echo base_url() . 'Alumnos/C_Alumnos/Tutores'?>"><i class="fa fa-circle-o"></i> Tutores y padres</a></li>
+            <li><a href="<?php echo base_url() . 'pedidos/C_pedidos/'?>"><i class="fa fa-circle-o"></i> Pedidos</a></li>
+            <li><a href="<?php echo base_url() . 'listado/C_listado'?>"><i class="fa fa-circle-o"></i> Listar Pedidos</a></li>
           </ul>
         </li>
-
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-files-o"></i>
-            <span>Proveedores</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="<?php echo base_url() . 'Proveedores/C_Proveedores/'?>"><i class="fa fa-circle-o"></i> Lista de Proveedores</a></li>
-          </ul>
-        </li>
-
-
-        <li class="treeview">
-          <a href="#">
-            <i class="fa fa-dollar"></i>
-            <span>Cuotas</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="<?php echo base_url() . 'Cuota/C_cuota'?>"><i class="fa fa-circle-o"></i> Pago de Cuotas</a></li>
-          </ul>
-        </li>
-
-
-
-
       </ul>
     </section>
     <!-- /.sidebar -->

@@ -13,6 +13,8 @@
   <!-- Ionicons -->
   <link rel="stylesheet" href="<?php echo base_url(). 'plantilla/bower_components/Ionicons/css/ionicons.min.css'?>">
   <!-- Theme style -->
+  <!-- jQuery -->
+  <script src="<?php echo base_url(). 'plantilla/bower_components/jquery/dist/jquery.min.js'?>"></script>
   <link rel="stylesheet" href="<?php echo base_url(). 'plantilla/dist/css/AdminLTE.min.css'?>">
   <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
@@ -23,8 +25,7 @@
 
   <!-- Select2 -->
   <link rel="stylesheet" href="<?php echo base_url(). 'plantilla/bower_components/select2/dist/css/select2.min.css'?>">
-  <!-- jQuery -->
-<script src="<?php echo base_url(). 'plantilla/bower_components/jquery/dist/jquery.min.js'?>"></script>
+
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
