@@ -1,64 +1,102 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
-?><!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" >
+
 <head>
-<meta charset="utf-8">
-<title>404 Page Not Found</title>
-<style type="text/css">
+  <meta charset="UTF-8">
+  <title>simple error 404</title>
 
-::selection { background-color: #E13300; color: white; }
-::-moz-selection { background-color: #E13300; color: white; }
 
-body {
-	background-color: #fff;
-	margin: 40px;
-	font: 13px/20px normal Helvetica, Arial, sans-serif;
-	color: #4F5155;
+  <link rel='stylesheet' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+
+      <style type="text/css">
+			@import url(https://fonts.googleapis.com/css?family=Oswald);
+
+
+body
+{
+   font-family: 'Oswald', sans-serif;
+   margin:0px;
+
+  background-color:rgba(30, 127, 203,0.8);
+  color:white;
 }
 
-a {
-	color: #003399;
-	background-color: transparent;
-	font-weight: normal;
+h1
+{
+  font-size:150px;
+
+  text-shadow:-5px 0px 6px rgba(255,255,255,0.6),-5px 0px rgba(0,0,0,0.6);
+
+  letter-spacing:8px;
+  text-align:center;
 }
 
-h1 {
-	color: #444;
-	background-color: transparent;
-	border-bottom: 1px solid #D0D0D0;
-	font-size: 19px;
-	font-weight: normal;
-	margin: 0 0 14px 0;
-	padding: 14px 15px 10px 15px;
+h1 span
+{
+    /* Chrome, Safari, Opera */
+    -webkit-animation-name: animRotate;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-delay: 1s;
+    -webkit-animation-direction:normal;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-play-state: running;
+    /* Standard syntax */
+    animation-name: animRotate;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-delay: 1s;
+    animation-direction:normal;
+    animation-iteration-count: infinite;
+    animation-play-state: running;
 }
 
-code {
-	font-family: Consolas, Monaco, Courier New, Courier, monospace;
-	font-size: 12px;
-	background-color: #f9f9f9;
-	border: 1px solid #D0D0D0;
-	color: #002166;
-	display: block;
-	margin: 14px 0 14px 0;
-	padding: 12px 10px 12px 10px;
+/* Animation */
+
+@keyframes animRotate
+{
+  to{
+    transform:rotate3d(0,1,0,360deg);
+  }
 }
 
-#container {
-	margin: 10px;
-	border: 1px solid #D0D0D0;
-	box-shadow: 0 0 8px #D0D0D0;
+@-webkit-keyframes animRotate
+{
+  to{
+    transform:rotate3d(0,1,0,360deg);
+  }
 }
 
-p {
-	margin: 12px 15px 12px 15px;
+div
+{
+  width:100%;
+  text-align:center;
+  position:relative;
+
+  font-size:20px;
+  margin-left:10px;
+  letter-spacing:8px;
+  top:-130px;
 }
-</style>
+
+
+			</style>
+
+
 </head>
+
 <body>
-	<div id="container">
-		<h1><?php echo $heading; ?></h1>
-		<?php echo $message; ?>
-	</div>
+
+<h1>4<span>0</span>4</h1>
+<div id='FNF'>Archivo no encontrado</div>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+<script>
+$(function(){
+  $('h1').toggle();
+  $('h1').delay(1000).toggle('Drop');//Effect at the begining
+});
+</script>
 </body>
 </html>

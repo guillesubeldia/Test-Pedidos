@@ -11,6 +11,15 @@ class C_pedidos extends MX_Controller {
       parent::__construct();
       $this->load->model('pedidos/M_pedidos');
       //poner control de acceso aqui, con el session
+    if($this->session->userdata('id_perfil') == 3 ){
+      echo redirect(base_url());
+    }
+    $is_logged_in = $this->session->userdata('is_logged_in');
+    if (!isset($is_logged_in) || $is_logged_in != true) {
+       echo redirect(base_url());
+    } else {
+        return true;
+    }
   }
 
   public function index(){
@@ -20,13 +29,28 @@ class C_pedidos extends MX_Controller {
     $datos["tipoMovimiento"] = $this->M_pedidos->RecuperarTipoMovimiento();
     $this->load->view('plantilla/V_cabecera');
     $this->load->view('plantilla/V_menu');
-    $this->load->view('listado/V_tablaPedidos',$datos);
+    $this->load->view('pedidos/V_tablaPedidos',$datos);
     $this->load->view('plantilla/V_pie');
-    
+
   }
-  
-  
-  
+
+  public function ListaFechas(){
+    $desde = $this->input->post("fechaDesde");
+    $hasta = $this->input->post("fechaHasta");
+
+     $datos["estadoPedido"]   = $this->M_pedidos->RecuperarEstado();
+     $datos["pedidos"]        = $this->M_pedidos->RecuperarPedidosFecha($desde, $hasta);
+     $datos["dependencia"]    = $this->M_pedidos->RecuperarDependencias();
+     $datos["tipoMovimiento"] = $this->M_pedidos->RecuperarTipoMovimiento();
+     $this->load->view('plantilla/V_cabecera');
+     $this->load->view('plantilla/V_menu');
+     $this->load->view('pedidos/V_tablaPedidos',$datos);
+     $this->load->view('plantilla/V_pie');
+
+  }
+
+
+
   public function LeerPedidos(){
     $pedidos = $this->M_pedidos->RecuperarPedidos();
     if ($pedidos !== 0) {
@@ -39,11 +63,11 @@ class C_pedidos extends MX_Controller {
       echo '<td style="vertical-align:middle;">' . $descripcionRecortado. '</td>';
       echo '<td>';
         echo '<a class="btn btn-primary" title="Editar datos." href="#" onclick="ModalEditar('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Editar</a> ';
-        echo '<a class="btn btn-info" title="Ver pedido completo." href="#" onclick="ModalEditar('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Ver</a> ';      
+        echo '<a class="btn btn-info" title="Ver pedido completo." href="#" onclick="ModalEditar('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Ver</a> ';
         echo '<a class="btn btn-success" title="Ver movimientos del pedido." href="#" onclick="ModalEditar('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Movimientos</a> ';
       echo '</td>';
     }
-   
+
   }else{
     $mensajeError = '<div class="m-alert m-alert--icon m-alert--icon-solid m-alert--outline alert alert-danger alert-dismissible fade show" role="alert">
       <div class="m-alert__icon">
@@ -63,7 +87,7 @@ class C_pedidos extends MX_Controller {
     echo $mensajeError;
   }
   }
-  
+
   public function LeerElementos(){
     $elementos = $this->M_pedidos->RecuperarElemento();
     if ($elementos !== 0) {
@@ -74,7 +98,7 @@ class C_pedidos extends MX_Controller {
     }
   }
   }
-  
+
   public function RegistrarPedido(){
     // $this->input->post();
     $tipoPedido = $this->input->post("slcTipoPedido");
@@ -85,7 +109,7 @@ class C_pedidos extends MX_Controller {
       'dependenciaorigen'   =>  $this->input->post("slcDependencia")
     );
     $idPedido = $this->M_pedidos->AltaPedido($datosPedido);
-  
+
     $fechaCarga = date("Y-m-d H:i:s");
     //si el tipo pedido no es de soporte, tiene elementos y se tienen que cargar
     if($tipoPedido != 1){
@@ -93,7 +117,7 @@ class C_pedidos extends MX_Controller {
         $elemento = $this->input->post('slcElemento[]')[$key];
         $cantidad = $this->input->post('txtCantidad[]')[$key];
         $observacion = $this->input->post('txtObservacion[]')[$key];
-  
+
         $pedidoElementos = array(
         'id_pedido'       => $idPedido,
         'id_elemento'     => $elemento,
@@ -101,7 +125,7 @@ class C_pedidos extends MX_Controller {
         'observacion'     => $observacion,
         'fecha'           => $fechaCarga
         );
-  
+
         $this->M_pedidos->AltaElementos($pedidoElementos);
       }
       //una vez que se terminan de cargar todos los productos tengo que redireccionar a una pagina de exito
@@ -110,8 +134,8 @@ class C_pedidos extends MX_Controller {
     //si no entra en el if, quiere decir que no tenia elementos para agregar
     redirect(base_url() . "/pedido/C_pedido/");
   }
-  
-  
+
+
   public function TablaMovimientos(){
    $idPedido = $this->input->post("idPedido");
     //$idPedido = 3 ;
@@ -133,27 +157,27 @@ class C_pedidos extends MX_Controller {
       }else{
         $acciones =  '';
       }
-  
+
         echo '<tr>';
-        
+
           echo '<td style="vertical-align:middle;"><center>' . $row->fechamovimiento . '</center></td>';
           echo '<td style="vertical-align:middle;">' . $row->estadopedido . '</td>';
           echo '<td style="vertical-align:middle;">' . $row->dependenciadestino . '</td>';
           echo '<td><center>'.$acciones.'</center></td>';
         echo '</tr>';
     }
-      //Armar un buen body con todos los datos a cargar dentro del modal, data table incluida 
+      //Armar un buen body con todos los datos a cargar dentro del modal, data table incluida
       echo  '</tbody>';
       echo '</table>';
   }
-  
+
   public function DatosMovimiento(){
     $id = $this->input->post("idPedido");
     $this->M_pedidos->DatosMovimiento($id);
   }
-  
+
   public function NuevoMovimiento(){
-  
+
     $datosMovimiento = array(
      'id_estadopedido'    => $this->input->post('slctEstadoMovimiento'),
      'fechamovimiento'    => $this->input->post('fechaMovimiento'),
@@ -161,12 +185,12 @@ class C_pedidos extends MX_Controller {
      'id_tipomovimiento'  => $this->input->post('slctTipoMovimiento'),
      'dependenciadestino' => $this->input->post('slctDestino')
    );
-  
+
    $this->M_pedidos->AltaMovimientos($datosMovimiento);
-  
+
    redirect(base_url() . "/pedidos/C_pedidos/");
   }
-  
+
   public function FinalizarMovimiento(){
     $fechaCarga = date("Y-m-d H:i:s");
     $datosMovimiento = array(
@@ -186,11 +210,11 @@ class C_pedidos extends MX_Controller {
     }
     echo json_encode($data);
   }
-  
+
   public function EditarPedido($idPedido){
     $datos["elementosPedido"] = $this->M_pedidos->ElementosPedido($idPedido);
     $datos["datosPedido"] = $this->M_pedidos->DatosPedido($idPedido);
-    
+
    // $datos["pedidos"] = $this->M_pedidos->RecuperarPedidos();
    // $datos["estadoPedido"] = $this->M_pedidos->RecuperarEstado();
     //$datos["tipoMovimiento"] = $this->M_pedidos->RecuperarTipoMovimiento();
@@ -202,7 +226,7 @@ class C_pedidos extends MX_Controller {
     $this->load->view('pedidos/V_editarPedido',$datos);
     $this->load->view('plantilla/V_pie');
   }
-  
+
   public function ActualizarPedido(){
     $idPedido = $this->input->post("idPedido");
     $tipoPedido = $this->input->post("slcTipoPedido");
@@ -213,7 +237,7 @@ class C_pedidos extends MX_Controller {
       'dependenciaorigen'   =>  $this->input->post("slcDependencia")
     );
     $this->M_pedidos->EditarPedido($datosPedido,$idPedido);
-    
+
     $fechaCarga = date("Y-m-d H:i:s");
     //si el tipo pedido no es de soporte, tiene elementos y se tienen que cargar
     if($tipoPedido != 1 && !empty($this->input->post('slcElemento[]')) ){
@@ -221,10 +245,10 @@ class C_pedidos extends MX_Controller {
         $elemento = $this->input->post('slcElemento[]')[$key];
         $cantidad = $this->input->post('txtCantidad[]')[$key];
         $observacion = $this->input->post('txtObservacion[]')[$key];
-  
+
       //Si no esta este dato, todos se van a insertar. Si esta solamente se va a actualizar
       if(!empty($this->input->post('idElemento[]'))){
-        $idDetallePedido = $this->input->post('idElemento[]')[$key]; 
+        $idDetallePedido = $this->input->post('idElemento[]')[$key];
         $pedidoElementos = array(
           'id_pedido'       => $idPedido,
           'id_elemento'     => $elemento,
@@ -250,7 +274,7 @@ class C_pedidos extends MX_Controller {
     //redireccionar
     redirect(base_url() . "/pedidos/C_pedidos/");
   }
-  
+
   public function EliminarElemento(){
     $id = $this->input->post("idPedido");
     $consulta= $this->M_pedidos->EliminarElemento($id);
@@ -263,5 +287,5 @@ class C_pedidos extends MX_Controller {
     }
     echo json_encode($data);
   }
-  
+
   }

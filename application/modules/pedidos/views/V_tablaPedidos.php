@@ -25,6 +25,8 @@
 
 
           <!-- /.box-header -->
+
+        <form role="form" method="post" action="<?php echo base_url() . 'pedidos/C_pedidos/ListaFechas'?>">
           <div class="box-body">
             <?php if (isset($exito) && $exito == true): ?>
             <div class="callout callout-success">
@@ -40,9 +42,30 @@
                             </a>
                         </div>
                     </div>
-                    
-                    
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                          <span class="input-group-addon">Fecha Desde</span>
+                          <input type="date" class="form-control" name="fechaDesde" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-group">
+                          <span class="input-group-addon">Hasta</span>
+                          <input type="date" class="form-control" name="fechaHasta" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                          <button  type="submit" name="button" class="btn btn-primary pull-left" >Buscar</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
                 <br>
                 <thead>
                 <tr>
@@ -55,7 +78,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <?php 
+                <?php
+                  if(!empty($pedidos)){
                 foreach ($pedidos as $pedido) {
                   $descripcionRecortado = substr($pedido->descripcion, 0, 30)."...";
                   echo '<tr>';
@@ -66,11 +90,12 @@
                     echo '<td style="vertical-align:middle;">' . $descripcionRecortado. '</td>';
                     echo '<td>';
                       echo '<a class="btn btn-primary" title="Editar datos." href="'.base_url().'Pedidos/C_pedidos/EditarPedido/'.$pedido->id_pedido.'" role="button"><i class="la la-pencil"></i>Editar</a> ';
-                      echo '<a class="btn btn-info" title="Ver pedido completo." href="#" onclick="MovimientosPedidos('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Ver</a> ';      
+                      echo '<a class="btn btn-info" title="Ver pedido completo." href="#" onclick="MovimientosPedidos('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Ver</a> ';
                       //echo '<a class="btn btn-success" title="Ver movimientos del pedido." href="#" onclick="MovimientosPedidos('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Movimientos</a> ';
                     echo '</td>';
                     echo '</tr>';
                   }
+                }
                 ?>
                   </tbody>
               </table>
@@ -102,7 +127,7 @@
             <input type="text" id="fechaAlta" class="form-control" readonly>
           </div>
         </div>
-      </div> 
+      </div>
 
 
       <div class="row">
@@ -112,8 +137,8 @@
             <textarea type="text" id="txtDescripcion" class="form-control" readonly></textarea>
           </div>
         </div>
-        
-      </div> 
+
+      </div>
 
 
 
@@ -130,13 +155,13 @@
             <input type="text" id="tipoPedido" class="form-control" readonly>
           </div>
         </div>
-      </div> 
-      
+      </div>
+
       <div class="row">
         <div class="col-md-12 text-center">
           <button type="button" aling="center" onclick="NuevoMovimiento()" class="btn btn-success">Nuevo Movimiento</button>
         </div>
-        
+
       </div>
 
 
@@ -169,7 +194,7 @@
           <span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Movimientos del Pedido</h4>
       </div>
-      
+
       <div class="modal-body">
       <input type="hidden" name="idPedido" id="idPedido">
       <div class="row">
@@ -177,7 +202,7 @@
             <div class="form-group">
               <label>Estado Movimiento</label>
               <select class="form-control" name="slctEstadoMovimiento" required>
-              <?php foreach($estadoPedido as $row) : 
+              <?php foreach($estadoPedido as $row) :
                 if($row->id_estadopedido == 2){
                   echo "<option value='".$row->id_estadopedido."' selected>".$row->descripcion . "</option>";
                 }
@@ -193,14 +218,14 @@
               <input type="date" id="fechaMovimiento" name="fechaMovimiento" class="form-control" required>
             </div>
           </div>
-        </div> 
-        
+        </div>
+
         <div class="row">
         <div class="col-md-6">
             <div class="form-group">
               <label>Tipo Movimiento</label>
               <select class="form-control" name="slctTipoMovimiento" required>
-              <?php foreach($tipoMovimiento as $row) : 
+              <?php foreach($tipoMovimiento as $row) :
                 if($row->id_tipomovimiento == 3){
                   echo "<option value='".$row->id_tipomovimiento."' selected>".$row->descripcion . "</option>";
                 }
@@ -217,16 +242,16 @@
           <div class="form-group">
               <label>Dependencia Destino</label>
               <select class="form-control" name="slctDestino" required>
-              <?php foreach($dependencia as $row) : 
+              <?php foreach($dependencia as $row) :
                 echo "<option value='".$row->id_dependencia."'>".$row->descripcion . "</option>";
               endforeach;
               ?>
               </select>
             </div>
           </div>
-        </div>      
+        </div>
 
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
@@ -338,7 +363,7 @@ function MovimientosPedidos($id){
       data:{idPedido:idPedido},
       success:function(data){
           if(data.status == 'ok'){
-            
+
             $('#txtDescripcion').val(data.result[0].descripcion);
             $('#idPedido').val(data.result[0].id_pedido);
             $('#tituloPedido').val(data.result[0].titulo);
@@ -370,7 +395,7 @@ function FinalizarMovimiento($id){
             $("#modal-estado").modal();
             document.getElementById("modal-estado").className = "modal modal-success fade";
             $('#tituloEstado').text("Exito!");
-            $('#cuerpoEstado').text("Se dio por finalizada la cadena de movimientos"); 
+            $('#cuerpoEstado').text("Se dio por finalizada la cadena de movimientos");
           }else{
             $("#modal-estado").modal();
             document.getElementById("modal-estado").className = "modal modal-danger fade";

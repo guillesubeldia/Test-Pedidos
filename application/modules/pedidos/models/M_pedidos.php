@@ -10,7 +10,7 @@ class M_pedidos extends CI_Model{
 
     }
     //Consultas para recuperar Registros.
-    
+
 public function RecuperarPedidos(){
     $this->db->select("p.id_pedido, tp.descripcion AS 'tipoPedido',DATE_FORMAT(p.fechaalta, '%d/%m/%Y %H:%i') as fechaalta , p.titulo, p.descripcion, dep.descripcion AS 'dependenciaOrigen'");
     $this->db->from("pedido AS p");
@@ -22,6 +22,29 @@ public function RecuperarPedidos(){
     $consulta = $this->db->get();
     if (count($consulta->result()) > 0) {
         return $consulta->result();
+    } else {
+        return 0;
+    }
+}
+
+public function RecuperarPedidosFecha($desde,$hasta){
+    $this->db->select("p.id_pedido, tp.descripcion AS 'tipoPedido',DATE_FORMAT(p.fechaalta, '%d/%m/%Y %H:%i') as fechaalta , p.titulo, p.descripcion, dep.descripcion AS 'dependenciaOrigen'");
+    $this->db->from("pedido AS p");
+    $this->db->join("tipopedido as tp", "tp.id_tipopedido = p.id_tipopedido");
+    $this->db->join("dependencia AS dep", "dep.id_dependencia = p.dependenciaorigen");
+    $this->db->where("p.activo",1);
+    $this->db->where("p.fechaalta <=",$hasta);
+    $this->db->where("p.fechaalta >=",$desde);
+
+    $this->db->limit(50);
+
+
+
+    $consulta = $this->db->get();
+    //echo $this->db->last_query();
+    if (count($consulta->result()) > 0) {
+        return $consulta->result();
+
     } else {
         return 0;
     }
@@ -105,7 +128,7 @@ public function MovimientoPedido($idPedido){
     $this->db->join("tipopedido AS tp","tp.id_tipopedido = p.id_tipopedido");
     $this->db->join("movimientopedido AS mp","mp.id_pedido = p.id_pedido");
     $this->db->join("tipomovimiento AS tmov","tmov.id_tipomovimiento = mp.id_tipomovimiento");
-    
+
     $this->db->join("estadopedido AS ep","ep.id_estadopedido = mp.id_estadopedido");
     $this->db->join("dependencia AS dest","dest.id_dependencia = mp.dependenciadestino");
     $this->db->where("p.activo",1);
@@ -144,7 +167,7 @@ public function ElementosPedido($idPedido){
 }
 
 public function DatosPedido($idPedido){
-    $this->db->select("p.id_pedido,p.titulo, p.descripcion, 
+    $this->db->select("p.id_pedido,p.titulo, p.descripcion,
     tp.id_tipopedido,tp.descripcion AS tipopedido,
     dest.id_dependencia,dest.descripcion AS 'dependenciaorigen'");
     $this->db->from("pedido AS p");
@@ -152,7 +175,7 @@ public function DatosPedido($idPedido){
     $this->db->join("dependencia AS dest","dest.id_dependencia = p.dependenciaorigen");
     $this->db->where("p.activo",1);
     $this->db->where("p.id_pedido",$idPedido);
-    
+
     return $this->db->get()->result();
 }
 /////////////////////////////////ALTAS Y MODIFICACIONES//////////////////////////////////////
@@ -261,7 +284,7 @@ public function EliminarElemento($id){
         return true;
     }
 }
-  
+
 
 
 }
