@@ -31,7 +31,19 @@ class C_pedidos extends MX_Controller {
     $this->load->view('plantilla/V_menu');
     $this->load->view('pedidos/V_tablaPedidos',$datos);
     $this->load->view('plantilla/V_pie');
+  }
 
+  public function CargarPedido(){
+    $datos["dependencia"]     = $this->M_pedidos->RecuperarDependencias();
+    $datos["estado"]          = $this->M_pedidos->RecuperarEstado();
+    $datos["tipoPedido"]      = $this->M_pedidos->RecuperarTipoPedido();
+    $datos["tipoMovimiento"]  = $this->M_pedidos->RecuperarTipoMovimiento();
+    $datos["elemento"]        = $this->M_pedidos->RecuperarElemento();
+    
+    $this->load->view('plantilla/V_cabecera');
+    $this->load->view('plantilla/V_menu');
+    $this->load->view('pedidos/V_altaPedido',$datos);
+    $this->load->view('plantilla/V_pie');
   }
 
   public function ListaFechas(){
@@ -46,7 +58,6 @@ class C_pedidos extends MX_Controller {
      $this->load->view('plantilla/V_menu');
      $this->load->view('pedidos/V_tablaPedidos',$datos);
      $this->load->view('plantilla/V_pie');
-
   }
 
 
@@ -132,7 +143,7 @@ class C_pedidos extends MX_Controller {
       //u error
     }
     //si no entra en el if, quiere decir que no tenia elementos para agregar
-    redirect(base_url() . "/pedido/C_pedido/");
+    redirect(base_url() . "/pedidos/C_pedidos/");
   }
 
 

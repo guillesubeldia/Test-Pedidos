@@ -175,8 +175,7 @@ CREATE TABLE `detallepedido` (
 /*Data for the table `detallepedido` */
 
 insert  into `detallepedido`(`id_detallepedido`,`id_pedido`,`id_elemento`,`cantidad`,`observacion`,`fecha`,`activo`) values 
-(2,5,3,2,'el otro id es','2019-02-14 15:24:30',1),
-(3,5,3,3,'el tercer id es ','2019-02-14 15:24:30',1),
+(3,5,3,3,'editado','2019-02-14 15:24:30',1),
 (4,6,3,1,'asd','2019-02-11 17:28:49',1);
 
 /*Table structure for table `elemento` */
@@ -216,11 +215,11 @@ insert  into `estadopedido`(`id_estadopedido`,`descripcion`,`activo`) values
 (3,'PAUSADO',1),
 (4,'FINALIZADO',1);
 
-/*Table structure for table `menues` */
+/*Table structure for table `menu` */
 
-DROP TABLE IF EXISTS `menues`;
+DROP TABLE IF EXISTS `menu`;
 
-CREATE TABLE `menues` (
+CREATE TABLE `menu` (
   `id_menu` int(12) NOT NULL AUTO_INCREMENT,
   `descripcion` varchar(32) NOT NULL,
   `nivel` int(12) NOT NULL,
@@ -229,97 +228,42 @@ CREATE TABLE `menues` (
   `icono` varchar(32) NOT NULL,
   `hijode` int(32) NOT NULL,
   PRIMARY KEY (`id_menu`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
-/*Data for the table `menues` */
+/*Data for the table `menu` */
 
-insert  into `menues`(`id_menu`,`descripcion`,`nivel`,`orden`,`referencia`,`icono`,`hijode`) values 
+insert  into `menu`(`id_menu`,`descripcion`,`nivel`,`orden`,`referencia`,`icono`,`hijode`) values 
 (1,'INICIO',1,1,'','icon-home',0),
-(2,'USUARIOS',1,1,'','icon-user',0),
-(3,'MENU',1,2,'','icon-list',0),
-(4,'Alta Menu',2,1,'Menu/c_Menu','',3),
-(5,'Modificar Menu',2,1,'Menu/c_Menu/Modificar\r\n','',3),
-(6,'Alta Usuario',2,1,'Usuarios/c_Usuarios/AltaUsuario','',2),
-(7,'Lista Usuarios',2,2,'Usuarios/c_Usuarios/BuscarUsuario\r\n','',2),
-(10,'Jugadores',1,3,'','icon-users',0),
-(11,'Buscar Jugador',2,1,'Jugador/c_jugador','ICON-USER-FOLLOW',10),
-(12,'ALUMNOS',1,4,'','icon-user-follow',0),
-(14,'Alta Alumnos',2,1,'Alumnos/c_Alumnos/','',12),
-(15,'Ver Alumnos',2,1,'Alumnos/c_Alumnos/TablasAlumnos','',12),
-(16,'PROVEEDORES',1,5,'','icon-basket-loaded',0),
-(17,'Alta Proveedor',2,1,'Proveedores/c_Proveedores/','',16),
-(18,'Alta Padres',2,1,'Alumnos/c_Alumnos/AltaPadres','',12),
-(19,'Ver Proveedores',2,1,'Proveedores/c_Proveedores/TablaProveedores','',16);
+(2,'PEDIDOS',1,1,'','icon-user',0),
+(3,'Ver Pedido',2,1,'pedidos/C_pedidos/','',2),
+(4,'LISTADO',1,1,'','',0),
+(5,'Ver Listado',2,1,'listado/C_listado','',4);
 
-/*Table structure for table `menues_perfiles` */
+/*Table structure for table `menu_perfiles` */
 
-DROP TABLE IF EXISTS `menues_perfiles`;
+DROP TABLE IF EXISTS `menu_perfiles`;
 
-CREATE TABLE `menues_perfiles` (
+CREATE TABLE `menu_perfiles` (
   `menu` int(12) NOT NULL,
   `perfil` int(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-/*Data for the table `menues_perfiles` */
+/*Data for the table `menu_perfiles` */
 
-insert  into `menues_perfiles`(`menu`,`perfil`) values 
+insert  into `menu_perfiles`(`menu`,`perfil`) values 
 (1,1),
 (2,1),
 (3,1),
 (4,1),
 (5,1),
-(6,1),
-(7,1),
-(8,1),
-(10,1),
-(11,1),
-(1,2),
 (1,3),
-(10,2),
-(10,3),
-(11,2),
-(11,3),
-(1,1),
-(2,1),
-(3,1),
-(4,1),
-(5,1),
-(6,1),
-(7,1),
-(8,1),
-(10,1),
-(11,1),
+(4,3),
+(5,3),
 (1,2),
-(1,3),
-(10,2),
-(10,3),
-(11,2),
-(11,3),
-(1,1),
-(2,1),
-(3,1),
-(4,1),
-(5,1),
-(6,1),
-(7,1),
-(8,1),
-(10,1),
-(11,1),
-(1,2),
-(1,3),
-(10,2),
-(10,3),
-(11,2),
-(11,3),
-(12,1),
-(12,1),
-(12,1),
-(14,1),
-(15,1),
-(16,1),
-(17,1),
-(18,1),
-(19,1);
+(2,2),
+(3,2),
+(4,2),
+(5,2);
 
 /*Table structure for table `movimientopedido` */
 
@@ -335,20 +279,21 @@ CREATE TABLE `movimientopedido` (
   `activo` int(11) NOT NULL DEFAULT '1',
   `fechacarga` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_movimientopedido`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
 
 /*Data for the table `movimientopedido` */
 
 insert  into `movimientopedido`(`id_movimientopedido`,`id_estadopedido`,`fechamovimiento`,`id_pedido`,`id_tipomovimiento`,`dependenciadestino`,`activo`,`fechacarga`) values 
 (1,1,'2019-01-30 10:55:23',1,1,16,1,'2019-02-07 10:47:01'),
-(2,1,'2019-02-01 18:05:55',3,1,126,1,'2019-02-07 10:47:01'),
 (3,2,'2019-02-21 18:05:55',3,1,100,1,'2019-02-07 10:47:01'),
 (4,2,'2019-02-28 00:00:00',3,3,11,1,'2019-02-07 12:25:39'),
 (5,4,'2019-02-07 17:41:23',1,4,126,1,'2019-02-07 13:41:23'),
 (18,4,'2019-02-07 17:57:40',3,4,126,1,'2019-02-07 13:57:40'),
 (19,1,'2019-02-08 14:26:14',4,1,126,1,'2019-02-08 10:26:14'),
 (20,1,'2019-02-08 14:26:55',5,1,126,1,'2019-02-08 10:26:55'),
-(21,1,'2019-02-11 17:28:48',6,1,126,1,'2019-02-11 13:28:48');
+(21,1,'2019-02-11 17:28:48',6,1,126,1,'2019-02-11 13:28:48'),
+(22,1,'2019-03-06 13:26:15',7,1,126,1,'2019-03-06 09:26:15'),
+(23,2,'2019-03-07 00:00:00',7,3,11,1,'2019-03-06 09:27:55');
 
 /*Table structure for table `pedido` */
 
@@ -363,7 +308,7 @@ CREATE TABLE `pedido` (
   `dependenciaorigen` int(11) NOT NULL COMMENT 'Id de la dependencia donde se origina el pedido',
   `activo` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_pedido`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 /*Data for the table `pedido` */
 
@@ -372,7 +317,8 @@ insert  into `pedido`(`id_pedido`,`id_tipopedido`,`fechaalta`,`titulo`,`descripc
 (3,1,'2019-02-01 14:05:55','Soporte sigho','',17,1),
 (4,3,'2019-02-08 10:26:14','Equipos','Pedido de equipos',6,1),
 (5,3,'2019-02-08 10:26:55','edita3','',6,1),
-(6,3,'2019-02-11 13:28:48','123123','dsfsdffdfdsdsf',114,1);
+(6,3,'2019-02-11 13:28:48','123123','dsfsdffdfdsdsf',114,1),
+(7,1,'2019-03-06 09:26:14','Titulo','Descripcion del pedido',4,1);
 
 /*Table structure for table `perfil` */
 
@@ -389,9 +335,8 @@ CREATE TABLE `perfil` (
 
 insert  into `perfil`(`id_perfil`,`descripcion`,`activo`) values 
 (1,'Administrador',1),
-(2,'Propietario',1),
-(3,'Trabajador',1),
-(4,'Profesor',1);
+(2,'Mesa Entrada',1),
+(3,'Soporte',1);
 
 /*Table structure for table `sessions` */
 
@@ -427,7 +372,9 @@ insert  into `sessions`(`id`,`ip_address`,`timestamp`,`data`) values
 ('ktm16kfti4aua2atr1r17cete9f3dnup','127.0.0.1',1549640152,'__ci_last_regenerate|i:1549640133;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
 ('dgji7c2ou0oua53jfk9pqpnqv0utjqoi','::1',1549971803,'__ci_last_regenerate|i:1549971800;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
 ('9jgi12bahu03q106lkhveaueai70drho','::1',1549990072,'__ci_last_regenerate|i:1549989936;'),
-('4tpv0m6f1r70f3vk0uvg7si04ks4o1av','127.0.0.1',1550164707,'__ci_last_regenerate|i:1550164614;');
+('4tpv0m6f1r70f3vk0uvg7si04ks4o1av','127.0.0.1',1550164707,'__ci_last_regenerate|i:1550164614;'),
+('tuu2h9g1lngorp2dv7hu6ec3dd6qc0uu','::1',1550247416,'__ci_last_regenerate|i:1550247414;'),
+('rll45asu8lk01lr3lkcsg1a6qrlbr5tc','::1',1551876476,'__ci_last_regenerate|i:1551876475;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;');
 
 /*Table structure for table `tipomovimiento` */
 
@@ -480,13 +427,104 @@ CREATE TABLE `usuario` (
   `activo` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE KEY `UQ_Usuarios_id_usuario` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `usuario` */
 
 insert  into `usuario`(`id_usuario`,`nombreUsuario`,`claveUsuario`,`email`,`id_persona`,`id_perfil`,`activo`) values 
 (1,'admin','bc5832de4d1698bcf6f07c366072a262892b4c25','Mail.google@algo.com',0,1,1),
-(2,'jose','7c4a8d09ca3762af61e59520943dc26494f8941b','ads',0,1,1);
+(2,'mesa','f04cc316d72ba737f35309ed8e4cd7100a7660bd','ads',0,2,1),
+(3,'soporte','97173f85e40441cc63f643162a756ed8f615502e','sopor',0,3,1);
+
+/* Trigger structure for table `detallepedido` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `audit_detallepedidoUpdate` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `audit_detallepedidoUpdate` AFTER UPDATE ON `detallepedido` FOR EACH ROW 
+    BEGIN
+	
+	INSERT INTO internoaudit.detallepedido_audit (id_detallepedido , id_pedido, id_elemento,cantidad,observacion,fecha,accion)
+	VALUES (OLD.id_detallepedido ,OLD.id_pedido ,OLD.id_elemento ,OLD.cantidad ,OLD.observacion ,OLD.fecha , "EDITADO");
+	
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `detallepedido` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `audit_detallepedidoDelete` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `audit_detallepedidoDelete` AFTER DELETE ON `detallepedido` FOR EACH ROW 
+    BEGIN
+	
+	INSERT INTO internoaudit.detallepedido_audit (id_detallepedido , id_pedido, id_elemento,cantidad,observacion,fecha,accion)
+	VALUES (OLD.id_detallepedido ,OLD.id_pedido ,OLD.id_elemento ,OLD.cantidad ,OLD.observacion ,OLD.fecha , "ELIMINADO");
+	
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `movimientopedido` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `audit_movimientopedidoUpdate` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `audit_movimientopedidoUpdate` AFTER UPDATE ON `movimientopedido` FOR EACH ROW BEGIN
+	INSERT INTO internoaudit.movimientopedido_audit (id_movimientopedido , id_estadopedido, fechamovimiento,id_pedido,id_tipomovimiento,dependenciadestino,fechacarga, accion)
+	VALUES (OLD.id_movimientopedido ,OLD.id_estadopedido ,OLD.fechamovimiento ,OLD.id_pedido ,OLD.id_tipomovimiento ,OLD.dependenciadestino , OLD.fechacarga,"EDITADO");
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `movimientopedido` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `audit_movimientopedidoDelete` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `audit_movimientopedidoDelete` AFTER DELETE ON `movimientopedido` FOR EACH ROW BEGIN
+	INSERT INTO internoaudit.movimientopedido_audit (id_movimientopedido , id_estadopedido, fechamovimiento,id_pedido,id_tipomovimiento,dependenciadestino,fechacarga, accion)
+	VALUES (OLD.id_movimientopedido ,OLD.id_estadopedido ,OLD.fechamovimiento ,OLD.id_pedido ,OLD.id_tipomovimiento ,OLD.dependenciadestino , OLD.fechacarga,"ELIMINADO");
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `pedido` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `audit_pedidoUpdate` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `audit_pedidoUpdate` AFTER UPDATE ON `pedido` FOR EACH ROW BEGIN
+	INSERT INTO internoaudit.pedido_audit (id_pedido , id_tipopedido, fechaalta,titulo,descripcion,dependenciaorigen,accion)
+	VALUES (OLD.id_pedido ,OLD.id_tipopedido ,OLD.fechaalta ,OLD.titulo ,OLD.descripcion ,OLD.dependenciaorigen , "EDITADO");
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `pedido` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `audit_pedidoDelete` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `audit_pedidoDelete` AFTER DELETE ON `pedido` FOR EACH ROW BEGIN
+	INSERT INTO internoaudit.pedido_audit (id_pedido , id_tipopedido, fechaalta,titulo,descripcion,dependenciaorigen,accion)
+	VALUES (OLD.id_pedido ,OLD.id_tipopedido ,OLD.fechaalta ,OLD.titulo ,OLD.descripcion ,OLD.dependenciaorigen , "ELIMINADO");
+    END */$$
+
+
+DELIMITER ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

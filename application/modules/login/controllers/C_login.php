@@ -11,7 +11,6 @@ class C_login extends MX_Controller {
            //print_r($this->session->all_userdata());
            //die;
         if ($this->session->userdata('is_logged_in') !== true ) {
-
             //El vector 'error' es utilizado como bandera para identificar en que momentos se libera el error
             //Sus valores son 'si' y 'no'.
             $data['error']   =   'no';
@@ -20,6 +19,10 @@ class C_login extends MX_Controller {
             $this->load->view('login/V_pieLogin');
 
         } else {
+        
+            if($this->session->userdata('claveUsuario') == '8cb2237d0679ca88db6464eac60da96345513964'){
+                redirect(base_url().'usuario/C_usuario');
+            }
 
             $this->load->view('plantilla/V_cabecera');
             $this->load->view('plantilla/V_menu');
