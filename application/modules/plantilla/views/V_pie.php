@@ -20,6 +20,10 @@
 <!-- AdminLTE for demo purposes -->
 <script src="<?php echo base_url(). 'plantilla/dist/js/demo.js'?>"></script>
 
+<!-- fullCalendar -->
+<script src="<?php echo base_url(). 'plantilla/bower_components/moment/moment.js'?>"></script>
+<script src="<?php echo base_url(). 'plantilla/bower_components/fullcalendar/dist/fullcalendar.min.js'?>"></script>
+
 
 <script>
 

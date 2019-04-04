@@ -11,14 +11,11 @@
       <li class="active">Listar</li>
     </ol>
   </section>
-
   <!-- Main content -->
   <section class="content">
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-
-
           <div class="box-header">
             <h3 class="box-title">Lista de Pedidos</h3>
           </div>
@@ -62,6 +59,7 @@
                   <th>Tipo Pedido</th>
                   <th>Titulo</th>
                   <th>Descripcion</th>
+                  <th>Ver</th>
 
                 </tr>
                 </thead>
@@ -76,7 +74,7 @@
                       echo '<td style="vertical-align:middle;"><center>' . $pedido->tipoPedido . '</center></td>';
                       echo '<td style="vertical-align:middle;"><center>' . $pedido->titulo . '</center></td>';
                       echo '<td style="vertical-align:middle;">' . $descripcionRecortado. '</td>';
-
+                      echo '<td><a class="btn btn-info" title="Ver pedido completo." href="#" onclick="MovimientosPedidos('.$pedido->id_pedido.')" role="button"><i class="la la-pencil"></i>Ver</a></td>';
                       echo '</tr>';
                     }
                 }
@@ -86,8 +84,6 @@
             </div>
           </div>
           <!-- /.box-body -->
-
-
 <div class="modal fade" id="modalMovimientos">
 <div class="modal-dialog">
   <div class="modal-content">
@@ -97,7 +93,6 @@
       <h4 class="modal-title">Movimientos del Pedido</h4>
     </div>
     <div class="modal-body">
-
     <div class="row">
         <div class="col-md-6">
           <div class="form-group">
@@ -112,8 +107,6 @@
           </div>
         </div>
       </div>
-
-
       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
@@ -121,11 +114,7 @@
             <textarea type="text" id="txtDescripcion" class="form-control" readonly></textarea>
           </div>
         </div>
-
       </div>
-
-
-
       <div class="row">
         <div class="col-md-6">
           <div class="form-group">
@@ -140,19 +129,14 @@
           </div>
         </div>
       </div>
-
-
-
-
       <div class="row">
         <div class="col-md-12" id="tablaMovimiento">
-
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
-      <button type="button" class="btn btn-primary">Aceptar</button>
+      <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
     </div>
   </div>
   <!-- /.modal-content -->
@@ -163,86 +147,6 @@
 
 <!-- MODAL PARA AGREGAR MOVIMIENTO -->
 
-<div class="modal fade" id="modalNuevoMovimiento">
-  <div class="modal-dialog">
-  <form role="form" method="post" id="form-movimiento" action="<?php echo base_url() . 'pedidos/C_pedidos/NuevoMovimiento'?>">
-
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Movimientos del Pedido</h4>
-      </div>
-
-      <div class="modal-body">
-      <input type="hidden" name="idPedido" id="idPedido">
-      <div class="row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label>Estado Movimiento</label>
-              <select class="form-control" name="slctEstadoMovimiento" required>
-              <?php foreach($estadoPedido as $row) :
-                if($row->id_estadopedido == 2){
-                  echo "<option value='".$row->id_estadopedido."' selected>".$row->descripcion . "</option>";
-                }
-                echo "<option value='".$row->id_estadopedido."'>".$row->descripcion . "</option>";
-              endforeach;
-              ?>
-              </select>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label>Fecha Movimiento</label>
-              <input type="date" id="fechaMovimiento" name="fechaMovimiento" class="form-control" required>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-              <label>Tipo Movimiento</label>
-              <select class="form-control" name="slctTipoMovimiento" required>
-              <?php foreach($tipoMovimiento as $row) :
-                if($row->id_tipomovimiento == 3){
-                  echo "<option value='".$row->id_tipomovimiento."' selected>".$row->descripcion . "</option>";
-                }
-                echo "<option value='".$row->id_tipomovimiento."'>".$row->descripcion . "</option>";
-              endforeach;
-              ?>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-12">
-          <div class="form-group">
-              <label>Dependencia Destino</label>
-              <select class="form-control" name="slctDestino" required>
-              <?php foreach($dependencia as $row) :
-                echo "<option value='".$row->id_dependencia."'>".$row->descripcion . "</option>";
-              endforeach;
-              ?>
-              </select>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
-        <button type="submit" form="form-movimiento" class="btn btn-primary">Cargar</button>
-      </div>
-    </div>
-    <!-- /.modal-content -->
-    </form>
-  </div>
-<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
 
 
 <!-- MODAL ERROR O EXITOO -->
@@ -328,7 +232,7 @@ function MovimientosPedidos($id){
   $("#modalMovimientos").modal();
   idPedido = $id;
 //carga la tabla
-  $.post("<?php echo base_url() ?>/Pedidos/C_Pedidos/TablaMovimientos",
+  $.post("<?php echo base_url() ?>/Listado/C_Listado/TablaMovimientos",
   {idPedido : idPedido},
     function(data) {
       document.getElementById('tablaMovimiento').innerHTML = data; //Se muestra el resultado
@@ -337,7 +241,7 @@ function MovimientosPedidos($id){
   //carga los box con la informacion del pedido
   $.ajax({
       type:'POST',
-      url:"<?php echo base_url() . '/Pedidos/C_Pedidos/DatosMovimiento';?>",
+      url:"<?php echo base_url() . '/Listado/C_Listado/DatosMovimiento';?>",
       dataType: "json",
       data:{idPedido:idPedido},
       success:function(data){
@@ -355,34 +259,6 @@ function MovimientosPedidos($id){
           }
       }
   });
-}
-
-function NuevoMovimiento(){
-  $("#modalNuevoMovimiento").modal();
-}
-
-function FinalizarMovimiento($id){
-  idPedido=$id;
-  console.log($id);
-  $.ajax({
-      type:'POST',
-      url:"<?php echo base_url() . '/Pedidos/C_Pedidos/FinalizarMovimiento';?>",
-      dataType: "json",
-      data:{idPedido:idPedido},
-      success:function(data){
-          if(data.status == 'ok'){
-            $("#modal-estado").modal();
-            document.getElementById("modal-estado").className = "modal modal-success fade";
-            $('#tituloEstado').text("Exito!");
-            $('#cuerpoEstado').text("Se dio por finalizada la cadena de movimientos");
-          }else{
-            $("#modal-estado").modal();
-            document.getElementById("modal-estado").className = "modal modal-danger fade";
-            $('#tituloEstado').text("ERROR!");
-            $('#cuerpoEstado').text("Ocurrio un error al intentar finalizar la cadena de movimiento.");
-          }
-       }
-   });
 }
 
 function CerrarTodo(){

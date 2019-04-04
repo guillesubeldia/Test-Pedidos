@@ -42,6 +42,14 @@
   <script src="<?php echo base_url(). 'plantilla/bower_components/bootstrap/dist/js/bootstrap.min.js'?>"></script>
 <!-- Creo que es para los modals -->
 
+<!-- fullCalendar -->
+<link rel="stylesheet" href="<?php echo base_url(). 'plantilla/bower_components/fullcalendar/dist/fullcalendar.min.css'?>">
+<link rel="stylesheet" href="<?php echo base_url(). 'plantilla/bower_components/fullcalendar/dist/fullcalendar.print.min.css'?>" media="print">
+
+
+
+
+
 <style>
     .example-modal .modal {
       position: relative;
