@@ -65,7 +65,8 @@ $(document).ready(function(){
   $.post('<?php echo base_url()?>calendario/C_calendario/FechasCalendarios',
     function(data){
       eventos = JSON.parse(data);
-
+      console.log(eventos);
+      console.log(eventos.id);
       $('#calendar').fullCalendar({
           monthNames: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
           monthNamesShort: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],

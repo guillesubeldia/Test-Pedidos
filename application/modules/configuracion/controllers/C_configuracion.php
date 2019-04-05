@@ -1,8 +1,6 @@
 <?php
 /*
  * Descripcion: Modulo de configuracion del sistema.-
- * Autor: Plazas, Ricardo Gastón
- * Fecha ultima actualizacion: 07/07/2018
  */
 
 class C_configuracion extends MX_Controller {

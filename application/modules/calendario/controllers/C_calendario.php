@@ -1,9 +1,8 @@
 <?php
 /*
- * Descripcion: Modulo de producto/Servicio.-
- * Autores: Plazas, Ricardo Gastón.
+ * Descripcion: Modulo de calendario.-
             Subeldía, Guillermo Daniel.
- * Fecha ultima actualizacion: 07/07/2018
+ 
  */
 
 class C_calendario extends MX_Controller {
@@ -28,8 +27,6 @@ class C_calendario extends MX_Controller {
 
   public function ObtenerEventos(){
     $fecha = $this->input->post("fecha");
-    
-    
     
     echo json_encode($fecha);
 

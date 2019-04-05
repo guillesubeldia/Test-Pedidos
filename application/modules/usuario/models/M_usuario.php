@@ -1,9 +1,9 @@
 <?php
 /*
  * Descripcion: Modulo de persona al sistema.
- * Autor: Plazas, Ricardo Gastón
- * Fecha ultima actualizacion: 11/06/2018
- * Autor actualizacion: Plazas, Ricardo Gastón
+  
+ * Fecha ultima actualizacion: 11/06/201
+ 
  */
 class M_usuario extends CI_Model{
 public function __construct(){

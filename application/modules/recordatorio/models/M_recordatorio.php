@@ -2,7 +2,7 @@
 /*
  * Descripcion: Modulo de recordatorios del sistema.
  * Autor: Subeldia, Guillermo Daniel
- * Fecha ultima actualizacion: 05/12/2018
+ * Fecha ultima actualizacion: 05/12/201
  * Autor actualizacion:
  */
 class M_recordatorio extends CI_Model{

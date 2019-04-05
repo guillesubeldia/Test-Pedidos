@@ -1,8 +1,6 @@
 <?php
 /*
  * Descripcion: Modulo de prueba de la nueva plantilla.-
- * Autor: Plazas, Ricardo Gastón
- * Fecha ultima actualizacion: 14/06/2018
  */
 
 class C_recordatorio extends MX_Controller {

@@ -1,9 +1,7 @@
 <?php
 /*
  * Descripcion: Modulo de entrada al sistema.
- * Autor: Plazas, Ricardo Gastón
- * Fecha ultima actualizacion: 11/06/2018
- * Autor actualizacion: Plazas, Ricardo Gastón
+ 
  */
 class M_login extends CI_Model{
 

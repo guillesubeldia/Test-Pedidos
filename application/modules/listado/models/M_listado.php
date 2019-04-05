@@ -155,17 +155,6 @@ public function DatosMovimiento($id){
     }
     echo json_encode($data);
   }
-
-public function ElementosPedido($idPedido){
-    $this->db->select("dp.id_detallepedido, dp.id_elemento, e.descripcion AS nombreelemento, dp.cantidad, dp.observacion");
-    $this->db->from("detallepedido AS dp");
-    $this->db->join("elemento AS e","dp.id_elemento = e.id_elemento");
-    $this->db->where("dp.activo",1);
-    $this->db->where("dp.id_pedido",$idPedido);
-
-    return $this->db->get()->result();
-}
-
 public function DatosPedido($idPedido){
     $this->db->select("p.id_pedido,p.titulo, p.descripcion,
     tp.id_tipopedido,tp.descripcion AS tipopedido,
@@ -177,6 +166,16 @@ public function DatosPedido($idPedido){
     $this->db->where("p.id_pedido",$idPedido);
 
     return $this->db->get()->result();
+}
+
+public function ElementosPedido($idPedido){
+    $this->db->select('dp.cantidad, el.descripcion,dp.observacion');
+    $this->db->from('detallepedido as dp');
+    $this->db->join('elemento as el','dp.id_elemento = el.id_elemento');
+    $this->db->where('dp.id_pedido',$idPedido);
+
+    return $this->db->get()->result();
+
 }
 
 

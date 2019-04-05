@@ -82,41 +82,78 @@ class C_listado extends MX_Controller {
   }
 
 
-  public function TablaMovimientos(){
-   $idPedido = $this->input->post("idPedido");
-    //$idPedido = 3 ;
-    $movimientos = $this->M_pedidos->MovimientoPedido($idPedido);
-    echo '<table id="tablaMovimientoPedidos" class="table table-bordered table-hover">';
-      echo '<br>';
-              echo '<thead>';
-                echo '<tr>';
-                  echo '<th style="text-align: center;">Fecha Movimiento</th>';
-                  echo '<th style="text-align: center;">Estado</th>';
-                  echo '<th>Dependencia Destino</th>';
+public function TablaMovimientos(){
+$idPedido = $this->input->post("idPedido");
+//$idPedido = 3 ;
+$movimientos = $this->M_pedidos->MovimientoPedido($idPedido);
+echo '<table id="tablaMovimientoPedidos" class="table table-bordered table-hover">';
+  echo '<br>';
+    echo '<thead>';
+      echo '<tr>';
+        echo '<th style="text-align: center;">Fecha Movimiento</th>';
+        echo '<th style="text-align: center;">Estado</th>';
+        echo '<th>Dependencia Destino</th>';
 
-                echo '</tr>';
-              echo '</thead>';
-              echo '<tbody>';
-    foreach($movimientos as $row){
-
-
-        echo '<tr>';
-
-          echo '<td style="vertical-align:middle;"><center>' . $row->fechamovimiento . '</center></td>';
-          echo '<td style="vertical-align:middle;">' . $row->estadopedido . '</td>';
-          echo '<td style="vertical-align:middle;">' . $row->dependenciadestino . '</td>';
-
-        echo '</tr>';
-    }
-      //Armar un buen body con todos los datos a cargar dentro del modal, data table incluida
-      echo  '</tbody>';
-      echo '</table>';
-  }
+      echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+if (empty($movimientos)){
+  echo "<tr>";
+  echo "<td colspan='3'><center>No hay datos</center></td>";
+  echo "</tr>";
+}    
+foreach($movimientos as $row){
+    echo '<tr>';
+      echo '<td style="vertical-align:middle;"><center>' . $row->fechamovimiento . '</center></td>';
+      echo '<td style="vertical-align:middle;">' . $row->estadopedido . '</td>';
+      echo '<td style="vertical-align:middle;">' . $row->dependenciadestino . '</td>';
+    echo '</tr>';
+}
+  //Armar un buen body con todos los datos a cargar dentro del modal, data table incluida
+  echo  '</tbody>';
+  echo '</table>';
+}
 
   public function DatosMovimiento(){
     $id = $this->input->post("idPedido");
     $this->M_pedidos->DatosMovimiento($id);
   }
+
+
+  public function TablaElementos(){
+    $idPedido = $this->input->post("idPedido");
+    
+     
+     $elementos = $this->M_listado->ElementosPedido($idPedido);
+
+     echo '<table id="tablaElementosPedidos" class="table table-bordered table-hover">';
+       echo '<br>';
+               echo '<thead>';
+                 echo '<tr>';
+                   echo '<th style="text-align: center;">Cantidad</th>';
+                   echo '<th style="text-align: center;">Elemento</th>';
+                   echo '<th style="text-align: center;">Observacion</th>';
+                 echo '</tr>';
+               echo '</thead>';
+               echo '<tbody>';
+     if (empty($elementos)){
+      //Armar un buen body con todos los datos a cargar dentro del modal, data table incluida
+      echo "<tr>";
+      echo "<td colspan='3'><center>No hay datos</center></td>";
+      echo "</tr>";
+     }          
+     foreach($elementos as $row){
+
+         echo '<tr>';
+           echo '<td style="vertical-align:middle;"><center>' . $row->cantidad . '</center></td>';
+           echo '<td style="vertical-align:middle;">' . $row->descripcion . '</td>';
+           echo '<td style="vertical-align:middle;">' . $row->observacion . '</td>';
+         echo '</tr>';
+     }
+       
+       echo  '</tbody>';
+       echo '</table>';
+   }
 
 
   public function ListaFechas(){
