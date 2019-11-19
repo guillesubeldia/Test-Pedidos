@@ -25,7 +25,7 @@ CREATE TABLE `dependencia` (
   `descripcion` varchar(50) NOT NULL COMMENT 'descripcion de la dependencia',
   `activo` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_dependencia`)
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=latin1;
 
 /*Data for the table `dependencia` */
 
@@ -155,7 +155,8 @@ insert  into `dependencia`(`id_dependencia`,`descripcion`,`activo`) values
 (123,'SUBSECRETARIA DE GESTIÓN DE ESTABLECIMINETOS ASIST',1),
 (124,'SUBSECRETARIA DE MEDICINA SANITARIA',1),
 (125,'SUBSECRETARIA DE TECNOLOGIA SANITARIA Y GESTIÓN TÉ',1),
-(126,'MINISTERIO DE DESARROLLOS HUMANOS',1);
+(126,'MINISTERIO DE DESARROLLOS HUMANOS',1),
+(127,'JULVER',1);
 
 /*Table structure for table `detallepedido` */
 
@@ -164,19 +165,28 @@ DROP TABLE IF EXISTS `detallepedido`;
 CREATE TABLE `detallepedido` (
   `id_detallepedido` int(11) NOT NULL AUTO_INCREMENT,
   `id_pedido` int(11) NOT NULL COMMENT 'id del pedido',
-  `id_elemento` int(11) NOT NULL COMMENT 'id del elemento a pedir',
-  `cantidad` int(11) NOT NULL COMMENT 'cantidad de elementos solicitados',
-  `observacion` varchar(50) DEFAULT NULL COMMENT 'observacion sobre el elemento',
-  `fecha` datetime NOT NULL COMMENT 'fecha de carga del elemento',
+  `id_elementodetalle` int(11) NOT NULL COMMENT 'id del elemento a pedir',
   `activo` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_detallepedido`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 /*Data for the table `detallepedido` */
 
-insert  into `detallepedido`(`id_detallepedido`,`id_pedido`,`id_elemento`,`cantidad`,`observacion`,`fecha`,`activo`) values 
-(3,5,3,3,'editado','2019-02-14 15:24:30',1),
-(4,6,3,1,'asd','2019-02-11 17:28:49',1);
+insert  into `detallepedido`(`id_detallepedido`,`id_pedido`,`id_elementodetalle`,`activo`) values 
+(1,5,3,1),
+(2,6,3,1),
+(3,4,3,1),
+(4,8,1,1),
+(5,8,3,1),
+(6,9,2,1),
+(7,9,3,1),
+(8,10,1,1),
+(9,15,2,1),
+(10,16,3,1),
+(11,17,4,1),
+(12,18,5,1),
+(13,19,6,1),
+(14,20,7,1);
 
 /*Table structure for table `elemento` */
 
@@ -187,14 +197,45 @@ CREATE TABLE `elemento` (
   `descripcion` varchar(50) NOT NULL COMMENT 'descripcion del elemento',
   `activo` int(11) NOT NULL DEFAULT '1' COMMENT 'estado',
   PRIMARY KEY (`id_elemento`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 
 /*Data for the table `elemento` */
 
 insert  into `elemento`(`id_elemento`,`descripcion`,`activo`) values 
-(1,'IMPRESORA',1),
+(1,'MONITOR',1),
 (2,'TECLADO',1),
-(3,'MONITOR',1);
+(3,'IMPRESORA TINTA',1),
+(4,'IMPRESORA LASER',1),
+(5,'PARLANTES',1);
+
+/*Table structure for table `elementodetalle` */
+
+DROP TABLE IF EXISTS `elementodetalle`;
+
+CREATE TABLE `elementodetalle` (
+  `id_elementodetalle` int(11) NOT NULL AUTO_INCREMENT,
+  `id_elemento` int(11) NOT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  `marca` varchar(50) DEFAULT NULL,
+  `modelo` varchar(50) DEFAULT NULL,
+  `numeroserie` varchar(50) DEFAULT NULL,
+  `diagnosticocliente` varchar(50) DEFAULT NULL,
+  `observacion` varchar(50) DEFAULT NULL,
+  `aud_fechaalta` timestamp NULL DEFAULT NULL,
+  `aud_fechamodi` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id_elementodetalle`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+
+/*Data for the table `elementodetalle` */
+
+insert  into `elementodetalle`(`id_elementodetalle`,`id_elemento`,`cantidad`,`marca`,`modelo`,`numeroserie`,`diagnosticocliente`,`observacion`,`aud_fechaalta`,`aud_fechamodi`) values 
+(1,1,NULL,'HP','JK-750',NULL,NULL,NULL,NULL,NULL),
+(2,4,1,'Lenovi','dasdasads','addsaads',NULL,'aadsads','2019-11-13 13:30:26',NULL),
+(3,4,1,'boreal','dasdasads','addsaads',NULL,'aadsads','2019-11-13 13:31:26',NULL),
+(4,4,1,'frutar','dasdasads','addsaads',NULL,'aadsads','2019-11-13 13:45:15',NULL),
+(5,4,1,'marcar','dasdasads','addsaads',NULL,'aadsads','2019-11-13 13:45:33',NULL),
+(6,4,1,'quaker','dasdasads','addsaads',NULL,'aadsads','2019-11-13 13:46:50',NULL),
+(7,1,1,'hp','test','11444144',NULL,'observo','2019-11-14 10:05:48',NULL);
 
 /*Table structure for table `estadopedido` */
 
@@ -228,7 +269,7 @@ CREATE TABLE `menu` (
   `icono` varchar(32) NOT NULL,
   `hijode` int(32) NOT NULL,
   PRIMARY KEY (`id_menu`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 
 /*Data for the table `menu` */
 
@@ -237,7 +278,9 @@ insert  into `menu`(`id_menu`,`descripcion`,`nivel`,`orden`,`referencia`,`icono`
 (2,'PEDIDOS',1,1,'','icon-user',0),
 (3,'Ver Pedido',2,1,'pedidos/C_pedidos/','',2),
 (4,'LISTADO',1,1,'','',0),
-(5,'Ver Listado',2,1,'listado/C_listado','',4);
+(5,'Ver Listado',2,1,'listado/C_listado','',4),
+(6,'Pedido Servicio Tecnico',2,2,'pedidos/C_pedidos/ServicioTecnico','',2),
+(7,'Pedido Soporte Sigho',2,3,'pedidos/C_pedidos/CargarPedido','',2);
 
 /*Table structure for table `menu_perfiles` */
 
@@ -263,7 +306,13 @@ insert  into `menu_perfiles`(`menu`,`perfil`) values
 (2,2),
 (3,2),
 (4,2),
-(5,2);
+(5,2),
+(6,1),
+(6,2),
+(6,3),
+(7,1),
+(7,2),
+(7,3);
 
 /*Table structure for table `movimientopedido` */
 
@@ -277,23 +326,45 @@ CREATE TABLE `movimientopedido` (
   `id_tipomovimiento` int(11) NOT NULL COMMENT 'que tipo de movimento es',
   `dependenciadestino` int(11) NOT NULL COMMENT 'a donde se hace el movimiento',
   `activo` int(11) NOT NULL DEFAULT '1',
-  `fechacarga` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fechacarga` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `aud_fechaalta` timestamp NULL DEFAULT NULL,
+  `aud_usuarioalta` varchar(50) DEFAULT NULL,
+  `aud_fechamodi` timestamp NULL DEFAULT NULL,
+  `aud_usuariomodi` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id_movimientopedido`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
 
 /*Data for the table `movimientopedido` */
 
-insert  into `movimientopedido`(`id_movimientopedido`,`id_estadopedido`,`fechamovimiento`,`id_pedido`,`id_tipomovimiento`,`dependenciadestino`,`activo`,`fechacarga`) values 
-(1,1,'2019-01-30 10:55:23',1,1,16,1,'2019-02-07 10:47:01'),
-(3,2,'2019-02-21 18:05:55',3,1,100,1,'2019-02-07 10:47:01'),
-(4,2,'2019-02-28 00:00:00',3,3,11,1,'2019-02-07 12:25:39'),
-(5,4,'2019-02-07 17:41:23',1,4,126,1,'2019-02-07 13:41:23'),
-(18,4,'2019-02-07 17:57:40',3,4,126,1,'2019-02-07 13:57:40'),
-(19,1,'2019-02-08 14:26:14',4,1,126,1,'2019-02-08 10:26:14'),
-(20,1,'2019-02-08 14:26:55',5,1,126,1,'2019-02-08 10:26:55'),
-(21,1,'2019-02-11 17:28:48',6,1,126,1,'2019-02-11 13:28:48'),
-(22,1,'2019-03-06 13:26:15',7,1,126,1,'2019-03-06 09:26:15'),
-(23,2,'2019-03-07 00:00:00',7,3,11,1,'2019-03-06 09:27:55');
+insert  into `movimientopedido`(`id_movimientopedido`,`id_estadopedido`,`fechamovimiento`,`id_pedido`,`id_tipomovimiento`,`dependenciadestino`,`activo`,`fechacarga`,`aud_fechaalta`,`aud_usuarioalta`,`aud_fechamodi`,`aud_usuariomodi`) values 
+(1,1,'2019-01-30 10:55:23',1,1,16,1,'2019-02-07 10:47:01',NULL,NULL,NULL,NULL),
+(3,2,'2019-02-21 18:05:55',3,1,100,1,'2019-02-07 10:47:01',NULL,NULL,NULL,NULL),
+(4,2,'2019-02-28 00:00:00',3,3,11,1,'2019-02-07 12:25:39',NULL,NULL,NULL,NULL),
+(5,4,'2019-02-07 17:41:23',1,4,126,1,'2019-02-07 13:41:23',NULL,NULL,NULL,NULL),
+(18,4,'2019-02-07 17:57:40',3,4,126,1,'2019-02-07 13:57:40',NULL,NULL,NULL,NULL),
+(19,1,'2019-02-08 14:26:14',4,1,126,1,'2019-02-08 10:26:14',NULL,NULL,NULL,NULL),
+(20,1,'2019-02-08 14:26:55',5,1,126,1,'2019-02-08 10:26:55',NULL,NULL,NULL,NULL),
+(21,1,'2019-02-11 17:28:48',6,1,126,1,'2019-02-11 13:28:48',NULL,NULL,NULL,NULL),
+(22,1,'2019-03-06 13:26:15',7,1,126,1,'2019-03-06 09:26:15',NULL,NULL,NULL,NULL),
+(23,2,'2019-03-07 00:00:00',7,3,11,1,'2019-03-06 09:27:55',NULL,NULL,NULL,NULL),
+(24,3,'0000-00-00 00:00:00',1,4,126,1,'2019-03-18 09:56:14',NULL,NULL,NULL,NULL),
+(25,1,'2019-11-08 17:31:16',8,1,126,1,'2019-11-08 13:31:16',NULL,NULL,NULL,NULL),
+(26,1,'2019-11-11 14:46:02',9,1,126,1,'2019-11-11 10:46:02',NULL,NULL,NULL,NULL),
+(27,2,'2019-11-12 00:00:00',3,3,125,1,'2019-11-11 10:49:14',NULL,NULL,NULL,NULL),
+(28,1,'2019-11-11 14:51:49',10,1,126,1,'2019-11-11 10:51:49',NULL,NULL,NULL,NULL),
+(29,2,'2019-11-01 00:00:00',8,4,1,1,'2019-11-11 10:53:13',NULL,NULL,NULL,NULL),
+(30,1,'2019-11-13 13:28:10',11,1,126,1,'2019-11-13 09:28:10',NULL,NULL,NULL,NULL),
+(31,1,'2019-11-13 13:28:53',12,1,126,1,'2019-11-13 09:28:53',NULL,NULL,NULL,NULL),
+(32,1,'2019-11-13 13:29:09',13,1,126,1,'2019-11-13 09:29:09',NULL,NULL,NULL,NULL),
+(33,1,'2019-11-13 13:30:10',14,1,126,1,'2019-11-13 09:30:10',NULL,NULL,NULL,NULL),
+(34,1,'2019-11-13 13:30:26',15,1,126,1,'2019-11-13 09:30:26',NULL,NULL,NULL,NULL),
+(35,1,'2019-11-13 13:31:26',16,1,126,1,'2019-11-13 09:31:26',NULL,NULL,NULL,NULL),
+(36,1,'2019-11-13 13:45:15',17,1,126,1,'2019-11-13 09:45:15',NULL,NULL,NULL,NULL),
+(37,1,'2019-11-13 13:45:33',18,1,126,1,'2019-11-13 09:45:33',NULL,NULL,NULL,NULL),
+(38,1,'2019-11-13 13:46:50',19,1,126,1,'2019-11-13 09:46:50',NULL,NULL,NULL,NULL),
+(39,1,'2019-11-14 10:05:48',20,1,126,1,'2019-11-14 10:05:48',NULL,NULL,NULL,NULL),
+(40,1,'2019-11-20 00:00:00',16,3,19,1,'2019-11-14 10:54:24','2019-11-14 10:54:24','admin',NULL,NULL),
+(41,1,'2019-11-14 12:02:17',21,1,126,1,'2019-11-14 12:02:17',NULL,NULL,NULL,NULL);
 
 /*Table structure for table `pedido` */
 
@@ -302,23 +373,51 @@ DROP TABLE IF EXISTS `pedido`;
 CREATE TABLE `pedido` (
   `id_pedido` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id del pedido',
   `id_tipopedido` int(11) NOT NULL COMMENT 'rela de la tabla tipo pedido',
-  `fechaalta` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'fecha que se crea el pedido',
+  `id_pedidotecnico` int(11) DEFAULT NULL,
+  `solicita` varchar(50) DEFAULT NULL,
+  `retira` varchar(50) DEFAULT NULL,
+  `fechaalta` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'fecha que se crea el pedido',
   `titulo` varchar(50) NOT NULL COMMENT 'titulo del pedido',
   `descripcion` text NOT NULL COMMENT 'Descripcion del pedido',
   `dependenciaorigen` int(11) NOT NULL COMMENT 'Id de la dependencia donde se origina el pedido',
+  `numeroservicio` varchar(50) DEFAULT NULL,
+  `fechaservicio` timestamp NULL DEFAULT NULL,
+  `aud_fechaalta` timestamp NULL DEFAULT NULL,
+  `aud_usuarioalta` varchar(50) DEFAULT NULL,
+  `aud_fechamodi` timestamp NULL DEFAULT NULL,
+  `aud_usuariomodi` varchar(50) DEFAULT NULL,
   `activo` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id_pedido`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 /*Data for the table `pedido` */
 
-insert  into `pedido`(`id_pedido`,`id_tipopedido`,`fechaalta`,`titulo`,`descripcion`,`dependenciaorigen`,`activo`) values 
-(1,1,'2019-01-30 10:54:43','PEDIDO TEST','TEXTO DE PRUEBA PARA EL PEDIDO MORTAL DE PRUEBA QUE VOY A HACER AHORA MISMO ATR',12,1),
-(3,1,'2019-02-01 14:05:55','Soporte sigho','',17,1),
-(4,3,'2019-02-08 10:26:14','Equipos','Pedido de equipos',6,1),
-(5,3,'2019-02-08 10:26:55','edita3','',6,1),
-(6,3,'2019-02-11 13:28:48','123123','dsfsdffdfdsdsf',114,1),
-(7,1,'2019-03-06 09:26:14','Titulo','Descripcion del pedido',4,1);
+insert  into `pedido`(`id_pedido`,`id_tipopedido`,`id_pedidotecnico`,`solicita`,`retira`,`fechaalta`,`titulo`,`descripcion`,`dependenciaorigen`,`numeroservicio`,`fechaservicio`,`aud_fechaalta`,`aud_usuarioalta`,`aud_fechamodi`,`aud_usuariomodi`,`activo`) values 
+(16,2,4,'roberto rojas','ismael perez','2019-11-13 09:31:26','asdasd','asdasdasdas',9,'service','2019-11-01 00:00:00','2019-11-13 13:31:26','admin',NULL,NULL,1),
+(17,4,NULL,'roberto rojas','ismael perez','2019-11-13 09:45:15','asdasd','asdasdasdas',9,'service','2019-11-01 00:00:00','2019-11-13 13:45:15','admin',NULL,NULL,1),
+(18,2,4,'roberto rojas','ismael perez','2019-11-13 09:45:33','asdasd','asdasdasdas',9,'service','2019-11-01 00:00:00','2019-11-13 13:45:33','admin',NULL,NULL,1),
+(19,2,4,'roberto rojas','ismael perez','2019-11-13 09:46:50','asdasd','asdasdasdas',9,'service','2019-11-01 00:00:00','2019-11-13 13:46:50','admin',NULL,NULL,1),
+(20,2,1,'solicitante martinez','retirador perez','2019-11-14 10:05:48','test 512','descripcion185',18,'153362254','2019-11-14 00:00:00','2019-11-14 10:05:48','admin',NULL,NULL,1),
+(21,1,NULL,'test pedido soporte',NULL,'2019-11-14 12:02:17','soporte','pedido soporte',13,NULL,NULL,'2019-11-14 12:02:17','admin',NULL,NULL,1);
+
+/*Table structure for table `pedidotecnico` */
+
+DROP TABLE IF EXISTS `pedidotecnico`;
+
+CREATE TABLE `pedidotecnico` (
+  `id_pedidotecnico` int(11) NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(50) DEFAULT NULL,
+  `activo` tinyint(1) DEFAULT '1',
+  PRIMARY KEY (`id_pedidotecnico`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+/*Data for the table `pedidotecnico` */
+
+insert  into `pedidotecnico`(`id_pedidotecnico`,`descripcion`,`activo`) values 
+(1,'A Reparar',1),
+(2,'Reparado/Listo',1),
+(3,'Prestamo',1),
+(4,'Baja',1);
 
 /*Table structure for table `perfil` */
 
@@ -329,7 +428,7 @@ CREATE TABLE `perfil` (
   `descripcion` varchar(32) NOT NULL,
   `activo` int(11) DEFAULT '1',
   PRIMARY KEY (`id_perfil`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
 /*Data for the table `perfil` */
 
@@ -355,26 +454,10 @@ CREATE TABLE `sessions` (
 /*Data for the table `sessions` */
 
 insert  into `sessions`(`id`,`ip_address`,`timestamp`,`data`) values 
-('clop6se9p5esvuup0j46rf7uj1r18hnm','::1',1548346517,'__ci_last_regenerate|i:1548346515;'),
-('7el22rugkd261s4sa3pl2cnfgscot12j','::1',1548347180,'__ci_last_regenerate|i:1548347163;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";contrasenia|s:40:\"d033e22ae348aeb5660fc2140aec35850c4da997\";activo|s:1:\"1\";id_perfil|s:1:\"2\";perfilUsuario|s:7:\"Gerente\";recordatorios|i:1;is_logged_in|b:1;'),
-('5euo3jcsnbf7b454h1kiaceuibfiua6d','::1',1548775471,'__ci_last_regenerate|i:1548775470;'),
-('pr9g5d5neuj03i986fre6pjrjt0kq8ca','::1',1548775535,'__ci_last_regenerate|i:1548775534;'),
-('47rlrur851ptk3dks2c5rbfb410utgsg','::1',1548775829,'__ci_last_regenerate|i:1548775829;'),
-('53g71cr81d03g69t7359r58uutp1q5uo','::1',1548778788,'__ci_last_regenerate|i:1548778563;|N;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"d033e22ae348aeb5660fc2140aec35850c4da997\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('5sc2bqs0ommdmmv9cr43d0cl2d59s1u6','::1',1548866489,'__ci_last_regenerate|i:1548866454;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('si006bsjb781rukeao5jbqe1i6cc4r6k','::1',1549286151,'__ci_last_regenerate|i:1549286079;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('h7n8ihnupdppbh6q2nc4ks9kbkf2pc6d','::1',1549296338,'__ci_last_regenerate|i:1549296336;'),
-('q8efoj3bulju3b3a38k6gf029v4sb6fs','::1',1549474739,'__ci_last_regenerate|i:1549474738;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('5mig7uv5pu86pd831m6lp4g7rihtld5b','::1',1549540266,'__ci_last_regenerate|i:1549540245;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('1uudb7meslgun7efrtavnq6vfkfngk93','::1',1549540714,'__ci_last_regenerate|i:1549540714;'),
-('re67tv7rhetq5flfand6qp6j6r4gd1m1','::1',1549544313,'__ci_last_regenerate|i:1549544313;'),
-('8gilf71grmcdd25gm01mphenrkmemqsr','::1',1549559411,'__ci_last_regenerate|i:1549559405;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('ktm16kfti4aua2atr1r17cete9f3dnup','127.0.0.1',1549640152,'__ci_last_regenerate|i:1549640133;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('dgji7c2ou0oua53jfk9pqpnqv0utjqoi','::1',1549971803,'__ci_last_regenerate|i:1549971800;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
-('9jgi12bahu03q106lkhveaueai70drho','::1',1549990072,'__ci_last_regenerate|i:1549989936;'),
-('4tpv0m6f1r70f3vk0uvg7si04ks4o1av','127.0.0.1',1550164707,'__ci_last_regenerate|i:1550164614;'),
-('tuu2h9g1lngorp2dv7hu6ec3dd6qc0uu','::1',1550247416,'__ci_last_regenerate|i:1550247414;'),
-('rll45asu8lk01lr3lkcsg1a6qrlbr5tc','::1',1551876476,'__ci_last_regenerate|i:1551876475;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"bc5832de4d1698bcf6f07c366072a262892b4c25\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;');
+('7bs67i6nmss7rdonsrvqd1o692pgdsb2','::1',1556539592,'__ci_last_regenerate|i:1556539589;'),
+('loi0dvfkam5s9ulvhfl9tthpdtci14ga','::1',1573479733,'__ci_last_regenerate|i:1573479730;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"d033e22ae348aeb5660fc2140aec35850c4da997\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
+('lue1cvdlg53tt21qiaqf3tcglu1be2gv','::1',1573654477,'__ci_last_regenerate|i:1573654454;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"d033e22ae348aeb5660fc2140aec35850c4da997\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;'),
+('62t8730033oaplrhk23hnfqj54knj7u1','::1',1574180585,'__ci_last_regenerate|i:1574180584;id_usuario|s:1:\"1\";nombreUsuario|s:5:\"admin\";claveUsuario|s:40:\"d033e22ae348aeb5660fc2140aec35850c4da997\";activo|s:1:\"1\";id_perfil|s:1:\"1\";perfilUsuario|s:13:\"Administrador\";is_logged_in|b:1;');
 
 /*Table structure for table `tipomovimiento` */
 
@@ -404,14 +487,13 @@ CREATE TABLE `tipopedido` (
   `descripcion` varchar(50) NOT NULL COMMENT 'Nombre/desripcion del tipo de pedido',
   `activo` int(11) DEFAULT '1' COMMENT 'Si esta activo o no',
   PRIMARY KEY (`id_tipopedido`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 /*Data for the table `tipopedido` */
 
 insert  into `tipopedido`(`id_tipopedido`,`descripcion`,`activo`) values 
 (1,'Soporte Sigho',1),
-(2,'Soporte Tecnico',1),
-(3,'Solicitud Equipamiento',1);
+(2,'Soporte Tecnico',1);
 
 /*Table structure for table `usuario` */
 
@@ -419,8 +501,8 @@ DROP TABLE IF EXISTS `usuario`;
 
 CREATE TABLE `usuario` (
   `id_usuario` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Llave primaria del usuario',
-  `nombreUsuario` varchar(50) NOT NULL COMMENT 'Nombre del usuario, no pueden existir iguales.',
-  `claveUsuario` varchar(500) NOT NULL COMMENT 'Clave del usuario',
+  `nombreusuario` varchar(50) NOT NULL COMMENT 'Nombre del usuario, no pueden existir iguales.',
+  `claveusuario` varchar(500) NOT NULL COMMENT 'Clave del usuario',
   `email` varchar(50) NOT NULL COMMENT 'Email del usuario.',
   `id_persona` int(11) NOT NULL COMMENT 'La clave foránea de relacion con los datos de la tabla persona',
   `id_perfil` bigint(20) NOT NULL COMMENT 'La clave foránea de relacion con los datos de la tabla perfile',
@@ -431,10 +513,10 @@ CREATE TABLE `usuario` (
 
 /*Data for the table `usuario` */
 
-insert  into `usuario`(`id_usuario`,`nombreUsuario`,`claveUsuario`,`email`,`id_persona`,`id_perfil`,`activo`) values 
-(1,'admin','bc5832de4d1698bcf6f07c366072a262892b4c25','Mail.google@algo.com',0,1,1),
+insert  into `usuario`(`id_usuario`,`nombreusuario`,`claveusuario`,`email`,`id_persona`,`id_perfil`,`activo`) values 
+(1,'admin','d033e22ae348aeb5660fc2140aec35850c4da997','Mail.google@algo.com',0,1,1),
 (2,'mesa','f04cc316d72ba737f35309ed8e4cd7100a7660bd','ads',0,2,1),
-(3,'soporte','97173f85e40441cc63f643162a756ed8f615502e','sopor',0,3,1);
+(3,'soporte','d033e22ae348aeb5660fc2140aec35850c4da997','sopor',0,3,1);
 
 /* Trigger structure for table `detallepedido` */
 
