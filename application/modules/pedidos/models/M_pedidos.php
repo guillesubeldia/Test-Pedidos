@@ -41,7 +41,7 @@ public function RecuperarPedidosFecha($desde,$hasta){
 
 
     $consulta = $this->db->get();
-    //echo $this->db->last_query();
+  //  echo $this->db->last_query();    die;
     if (count($consulta->result()) > 0) {
         return $consulta->result();
 
@@ -107,6 +107,7 @@ public function RecuperarElemento(){
     $this->db->select("id_elemento, descripcion");
     $this->db->from("elemento");
     $this->db->where("activo",1);
+    $this->db->order_by("descripcion","asc");
 
     $consulta = $this->db->get();
     if (count($consulta->result()) > 0) {
@@ -157,9 +158,11 @@ public function DatosMovimiento($id){
   }
 
 public function ElementosPedido($idPedido){
-    $this->db->select("dp.id_detallepedido, dp.id_elemento, e.descripcion AS nombreelemento, dp.cantidad, dp.observacion");
+    $this->db->select("dp.id_detallepedido, dp.id_elementodetalle, e.descripcion AS nombreelemento, ed.cantidad, ed.observacion,,
+ed.marca, ed.modelo, ed.numeroserie");
     $this->db->from("detallepedido AS dp");
-    $this->db->join("elemento AS e","dp.id_elemento = e.id_elemento");
+    $this->db->join("elementodetalle AS ed","dp.id_elementodetalle = ed.id_elementodetalle");
+    $this->db->join("elemento AS e","e.id_elemento = ed.id_elemento");
     $this->db->where("dp.activo",1);
     $this->db->where("dp.id_pedido",$idPedido);
 
@@ -167,9 +170,9 @@ public function ElementosPedido($idPedido){
 }
 
 public function DatosPedido($idPedido){
-    $this->db->select("p.id_pedido,p.titulo, p.descripcion,
-    tp.id_tipopedido,tp.descripcion AS tipopedido,
-    dest.id_dependencia,dest.descripcion AS 'dependenciaorigen'");
+    $this->db->select("p.id_pedido,p.titulo, p.descripcion, p.solicita ,p.retira, p.numeroservicio, DATE_FORMAT(p.fechaservicio, '%d/%m/%Y') as fechaservicio, p.id_pedidotecnico,
+                        tp.id_tipopedido,tp.descripcion AS tipopedido,
+                        dest.id_dependencia,dest.descripcion AS 'dependenciaorigen'");
     $this->db->from("pedido AS p");
     $this->db->join("tipopedido AS tp","tp.id_tipopedido = p.id_tipopedido");
     $this->db->join("dependencia AS dest","dest.id_dependencia = p.dependenciaorigen");
@@ -284,7 +287,75 @@ public function EliminarElemento($id){
         return true;
     }
 }
+/* PEDIDOS TECNICOSSSS*/
+public function RecuperarTipoPedidoTecnico(){
+    $this->db->select("id_pedidotecnico, descripcion");
+    $this->db->from("pedidotecnico");
+    $this->db->where("activo",1);
 
+    $consulta = $this->db->get();
+    if (count($consulta->result()) > 0) {
+        return $consulta->result();
+    } else {
+        return 0;
+    }
+}
+
+public function AltaPedidoTecnico($datosPedido){
+    $this->db->trans_begin();
+    //inserto todo el contenido del pedido
+    $this->db->insert('pedido', $datosPedido);
+    $idPedido = $this->db->insert_id();
+    // creo el primer movimiento del pedido que es el ingreso
+    $fechaHoy = date("Y-m-d H:i:s");
+    $movimentoPedido = array(
+        'id_estadopedido'   => 1, //ingresado
+        'fechamovimiento'   => $fechaHoy,
+        'id_pedido'	        => $idPedido,
+        'id_tipomovimiento' => 1, //nuevo ingreso
+        'dependenciadestino'=> 126, //ministerio desarrollo humano
+        'activo'            => 1
+    );
+    $this->db->insert('movimientopedido',$movimentoPedido);
+
+    //si todo va correcto devuelvo el id del pedido, para usarlo
+    if($this->db->trans_status() === FALSE) {
+        $this->db->trans_rollback();
+        $this->db->trans_off();
+        return false;
+    }else {
+        $this->db->trans_commit();
+        $this->db->trans_off();
+        return $idPedido;
+    }
+}
+
+
+public function AltaElementosTecnico($pedidoElementos,$idPedido){
+    $this->db->trans_begin();
+    //Cargo uno por uno los elementos que figuran dentro del detalle del pedido
+    $this->db->insert('elementodetalle', $pedidoElementos);
+
+    //luego de esto, me quedo con el id, y lo inserto en la tabla detallepedido 
+    $idElemento = $this->db->insert_id();
+    $detallePedido = array(
+                    'id_pedido'          => $idPedido,
+                    'id_elementodetalle' => $idElemento);
+
+
+    $this->db->insert('detallepedido', $detallePedido);
+
+
+    if($this->db->trans_status() === FALSE) {
+        $this->db->trans_rollback();
+        $this->db->trans_off();
+        return FALSE;
+    }else {
+        $this->db->trans_commit();
+        $this->db->trans_off();
+        return TRUE;
+    }
+}
 
 
 }

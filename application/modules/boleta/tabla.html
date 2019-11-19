@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous"></script>
+<script type="text/javascript" src="jquery/jquery-barcode.js"></script>
+
+<body>
+
+    <div>
+        <table border="1">
+            <tbody>
+                <tr>
+                    <td colspan="3" align="left">
+                        <img src="Logo MDH.png">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">Cargo N°:</td>
+                    <td>01/01/2222</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Recibi De:</td>
+                    <td colspan="2">Direccion de informatica y comunicaciones</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                </tr>
+                <tr style="height: 39px;">
+                    <td align="center" style="width: 73px; height: 39px;">Cantidad</td>
+                    <td style="width: 600px; height: 39px;">Descripcion</td>
+                    <td align="center" style="width:  73px; height: 39px;">Total</td>
+                </tr>
+                <tr style="height: 39px;">
+                    <td style="width: 73px; height: 39px;">&nbsp;</td>
+                    <td style="width: 600px; height: 39px;">&nbsp;</td>
+                    <td style="width: 73px; height: 39px;">&nbsp;</td>
+                </tr>
+                <tr style="height: 39px;">
+                    <td style="width: 73px; height: 39px;">&nbsp;</td>
+                    <td style="width: 600px; height: 39px;">&nbsp;</td>
+                    <td style="width: 73px; height: 39px;">&nbsp;</td>
+                </tr>
+                <tr style="height: 39px;">
+                    <td style="width: 73px; height: 39px;">&nbsp;</td>
+                    <td style="width: 600px; height: 39px;">&nbsp;</td>
+                    <td style="width: 73px; height: 39px;">&nbsp;</td>
+                </tr>
+                <tr style="height: 39px;">
+                    <td style="width: 73px; height: 39px;">&nbsp;</td>
+                    <td style="width: 600px; height: 39px;">&nbsp;</td>
+                    <td style="width: 70px; height: 39px;">&nbsp;</td>
+                </tr>
+               
+                <tr>
+                    <td>Destino:</td>
+                    <td colspan="2">Direccion de informatica y comunicaciones</td>
+                </tr>
+                <tr>
+                    <td colspan="3" align="center">
+                        <div id="bcTarget"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- DivTable.com -->
+    </div>
+    
+
+</body>
+
+<script>
+$("#bcTarget").barcode("1234567890128", "code11",{ barWidth: 2, barHeight: 80,fontSize: 20 });
+</script>
+
+</html>

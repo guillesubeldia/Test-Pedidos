@@ -1,26 +1,4 @@
-<?php
-foreach($datosPedido as $row):
-    $idPedido               = $row->id_pedido;
-    $tituloPedido           = $row->titulo;
-    $descripcionPedido      = $row->descripcion;
-    $tipoPedido             = $row->id_tipopedido;
-    $descirpcionTipoPedido  = $row->tipopedido;
-    $dependencia            = $row->id_dependencia;
-    $descripcionDependencia = $row->dependenciaorigen;
 
-    $solicitante            = $row->solicita;
-    $retira                 = $row->retira;
-    $numeroservicio         = $row->numeroservicio;
-    $fechaservicio          = $row->fechaservicio;
-    $pedidotecnico          = $row->id_pedidotecnico;
-endforeach;
-
- if (!empty($elementosPedido)) {
-    $estado="block";
- }else{
-    $estado="none";
- }
-?>
 <!-- INICIO CUERPO -->
 <div class="content-wrapper">
   <div class="content-header">
@@ -38,67 +16,92 @@ endforeach;
         <!-- INICIO BOX DE REGISTRO DE pedidos -->
         <div class="box box-primary">
           <div class="box-header with-border">
-            <h3 class="box-title">Datos del pedido</h3>
+            <h3 class="box-title">Pedido de <strong>Servicio Tecnico</strong></h3>
           </div>
           <div class="box-body">
             <!-- INICIO FORMULARIO DE REGISTRO DE pedidos -->
-            <form role="form" method="post" id="form-pedido" action="<?php echo base_url() . 'pedidos/C_pedidos/ActualizarPedido'?>">
-              <input type="hidden" value="<?php echo $idPedido;?>" name="idPedido">
+            <form role="form" method="post" id="form-pedido" action="<?php echo base_url() . 'pedidos/C_pedidos/RegistrarServicioTecnico'?>">
               <div class="row">
                 <div class="col-md-12">
                 
                 <div class="row">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <label for="">Tipo Pedido</label>
-                      <select name="slcTipoPedido" onChange="TipoPedido(this)" class="form-control" disabled>
-                      <option value="<?php echo $tipoPedido;?>" selected><?php echo $descirpcionTipoPedido;?></option>
-                        <?php foreach($tipoPedidoArray as $row) : 
-                          echo "<option value='".$row->id_tipopedido."'>".$row->descripcion . "</option>";
-                        endforeach;
-                        ?>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-
-                <hr>
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="">Personal Solicitante </label>
-                      <input type="text" value="<?php echo $solicitante;?>" name="txtSolicitante" class="form-control">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="">Tipo Pedido / Estado</label>
+                        <select name="slcTipoPedido"  class="form-control">
+                        <option value="" selected disabled>Seleccione..</option>
+                          <?php foreach($tipoPedidoTecnico as $row) : 
+                            echo "<option value='".$row->id_pedidotecnico."'>".$row->descripcion . "</option>";
+                          endforeach;
+                          ?>
+                        </select>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label for="">Personal Retira </label>
-                      <input type="text" value="<?php echo $retira;?>" name="txtRetira" class="form-control">
+                  <hr>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="">Personal Solicitante </label>
+                        <input type="text" name="txtSolicitante" class="form-control">
+                      </div>
                     </div>
-                  </div>
 
-                </div>
-                <hr>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="">Personal Retira </label>
+                        <input type="text" name="txtRetira" class="form-control">
+                      </div>
+                    </div>
+
+                  </div>
+                  <hr>
 
                   <div class="form-group">
-                    <label for="">Titulo (*)</label>
-                    <input type="text" name="txtTitulo" value="<?php echo $tituloPedido;?>" class="form-control">
+                    <label for="">Titulo</label>
+                    <input type="text" name="txtTitulo" class="form-control">
                   </div>
 
+                  
                   <div class="form-group">
-                    <label for="">Descripcion (*)</label>
-                    <textarea type="text" name="txtDescripcion" value="<?php echo $descripcionPedido;?>" class="form-control"></textarea>
+                    <label for="">Descripcion</label>
+                    <textarea type="text" name="txtDescripcion" class="form-control"></textarea>
                   </div>
+
+                  
+                  <hr>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="">Numero Servicio (*)</label>
+                        <input type="text" name="txtNumeroServicio" class="form-control">
+                        <span class="label label-warning">* Datos que figuran en la boleta</span>
+                      </div>
+                    </div>
+
+                    <div class="col-md-2">
+                      <div class="form-group">
+                        <label for="">Fecha Servicio (*)</label>
+                        <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
+                          <input class="form-control" type="text" readonly name="txtFechaServicio">
+                          <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                        <!-- <input type="date" name="txtFechaServicio" class="form-control formateado"> -->
+                      </div>
+                    </div>
+                  </div>        
+                    
+                  
+                  <hr>
 
                   <div class="row">
                     <div class="col-md-12">
                       <div class="form-group">
                         <label for="">Dependencia de Origen</label>
                         <select name="slcDependencia" class="form-control">
-                        <option value="<?php echo $dependencia;?>" selected><?php echo $descripcionDependencia;?></option>
-                          <?php foreach($dependenciaArray as $row) : 
+                        <option value="" selected disabled>Seleccione..</option>
+                          <?php foreach($dependencia as $row) : 
                             echo "<option value='".$row->id_dependencia."'>".$row->descripcion . "</option>";
                           endforeach;
                           ?>
@@ -109,40 +112,11 @@ endforeach;
                 </div>
               </div>
 
-
-
-              <hr>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="">Numero Servicio (*)</label>
-                    <input type="text" name="txtNumeroServicio" class="form-control">
-                    <span class="label label-warning">* Datos que figuran en la boleta</span>
-                  </div>
-                </div>
-
-                <div class="col-md-2">
-                  <div class="form-group">
-                    <label for="">Fecha Servicio (*)</label>
-                    <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
-                      <input class="form-control" type="text" value="<?php echo $fechaservicio;?>"readonly name="txtFechaServicio">
-                      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-                    </div>
-                    <!-- <input type="date" name="txtFechaServicio" class="form-control formateado"> -->
-                  </div>
-                </div>
-              </div>        
-              <hr>            
-
-
-
-           
-
               <div class="row" >
-                <div class="col-md-12" id="divElementos" style="display:<?php echo $estado;?>">
+                <div class="col-md-12" id="divElementos">
                   <hr>
-                  <h4>Lista de Elementos del Pedido</h4>
-                  <hr>
+                  <h4><strong>Lista de Elementos del Pedido</strong></h4>
+                
                   <div class="table-scrollable">
                     <table id="tablaElementos" class="table table-striped table-bordered table-advance table-hover">
                       <thead>
@@ -158,35 +132,6 @@ endforeach;
                       </thead>
                       <tbody>
                         <tr>
-                        <?php 
-                        $pos = 1;
-                        if (!empty($elementosPedido)) {
-                            
-                            $pos = 1;
-                            foreach($elementosPedido as $fila){
-                                echo "<tr>";
-                                echo "<td>";
-                                echo "<input type='hidden' name='idElemento[".$pos."]' value='".$fila->id_detallepedido."'>";
-                                    echo "<select class='form-control' name='slcElemento[".$pos."]' tabindex='1'>";
-                                        echo "<option value='".$fila->id_elemento."' selected>".$fila->nombreelemento."</option>";
-                                        foreach($elemento as $row) : 
-                                            echo "<option value='".$row->id_elemento."'>".$row->descripcion . "</option>";
-                                        endforeach;
-                                    echo "</select>";
-                                echo "</td>";
-                                echo "<td> <input type='text' name='txtCantidad[".$pos."]' value='".$fila->cantidad."' class='form-control'> </td>";
-
-                                echo "<td> <input type='text' name='txtMarca[".$pos."]' value='".$fila->marca."' class='form-control'> </td>";
-                                echo "<td> <input type='text' name='txtModelo[".$pos."]' value='".$fila->modelo."' class='form-control'> </td>";
-                                echo "<td> <input type='text' name='txtNumeroSerie[".$pos."]' value='".$fila->numeroserie."' class='form-control'> </td>";
-                                echo "<td> <input type='text' name='txtObservacion[".$pos."]' value='".$fila->observacion."' class='form-control'> </td>";
-                                echo "<td> <button type='button' class='btn btn-danger' onclick='EliminarDeLista(this,".$fila->id_detallepedido.")'>Eliminar</button> </td>";
-                                $pos++;
-                                echo "</tr>";
-                            }
-                        }
-                        ?>
-
                           <td>
                             <select class="form-control" name="slcElemento[]" tabindex="1">
                             <option value='' selected disabled>Seleccione ...</option>
@@ -212,7 +157,18 @@ endforeach;
                   </button>
                 </div>
               </div>
-            </div>
+
+              
+             
+             
+             
+             
+             
+             
+             
+             
+             
+              </div>
 
 
 
@@ -283,6 +239,12 @@ var posicionCampo = 1;
   //RecuperarElemento();
   //agregarElemento();
 }
+
+
+
+
+
+
 /* Definimos la función EliminarElemento, la cual se encargará de quitar la fila completa del formulario. No es necesario hacer modificaciones sobre este código */
 function EliminarElemento(obj) {
   var oTr = obj;
@@ -291,27 +253,5 @@ function EliminarElemento(obj) {
   }
   var root = oTr.parentNode;
   root.removeChild(oTr);
-}
-
-function EliminarDeLista(obj,id){
-  idPedido = id;
-  $.ajax({
-      type:'POST',
-      url:"<?php echo base_url() . '/Pedidos/C_Pedidos/EliminarElemento';?>",
-      dataType: "json",
-      data:{idPedido:idPedido},
-      success:function(data){
-        console.log(idPedido);
-          if(data.status == 'ok'){
-           //si entra en la funcion, elimina la fila
-            var fila = obj;
-            while(fila.nodeName.toLowerCase() != 'tr') {
-                fila=fila.parentNode;
-            }
-              var root = fila.parentNode;
-              root.removeChild(fila);
-          }
-       }
-   });  
 }
 </script>

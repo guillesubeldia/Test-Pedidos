@@ -11,6 +11,19 @@
 <!-- Select2 -->
 <script src="<?php echo base_url(). 'plantilla/bower_components/select2/dist/js/select2.full.min.js'?>"></script>
 
+
+<!-- date-range-picker -->
+<script src="<?php echo base_url(). 'plantilla/bower_components/moment/min/moment.min.js'?>"></script>
+<script src="<?php echo base_url(). 'plantilla/bower_components/bootstrap-daterangepicker/daterangepicker.js'?>"></script>
+<!-- bootstrap datepicker -->
+<script src="<?php echo base_url(). 'plantilla/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js'?>"></script>
+
+<!-- InputMask -->
+<script src="<?php echo base_url(). 'plantilla/plugins/input-mask/jquery.inputmask.js'?>"></script>
+<script src="<?php echo base_url(). 'plantilla/plugins/input-mask/jquery.inputmask.date.extensions.js'?>"></script>
+<script src="<?php echo base_url(). 'plantilla/plugins/input-mask/jquery.inputmask.extensions.js'?>"></script>
+
+
 <!-- SlimScroll -->
 <script src="<?php echo base_url(). 'plantilla/bower_components/jquery-slimscroll/jquery.slimscroll.min.js'?>"></script>
 <!-- FastClick -->
@@ -26,12 +39,8 @@
 
 
 <script>
-
-  // $(document).ready(function () {
-  //   $('.sidebar-menu').tree()
-  // })
-  $(function () {
-    $('.select2').select2()
+ $(function () {
+   $('.select2').select2()
 
     $('#example2').DataTable({
       'paging'      : true,
@@ -41,7 +50,24 @@
       'info'        : true,
       'autoWidth'   : false
     })
+
+    
   })
+  
+$(function () {
+  $(".datepicker").datepicker({ 
+    autoclose: true, 
+    todayHighlight: true,
+    format: "dd-mm-yyyy",
+    maxViewMode: 2,
+    clearBtn: true,
+    language: "es"
+  }).datepicker('update', new Date());
+});
+  // $(document).ready(function () {
+  //   $('.sidebar-menu').tree()
+  // })
+ 
 </script>
 </body>
 </html>

@@ -47,8 +47,9 @@ class C_pedidos extends MX_Controller {
   }
 
   public function ListaFechas(){
-    $desde = $this->input->post("fechaDesde");
-    $hasta = $this->input->post("fechaHasta");
+    
+    $desde = date("Y-m-d", strtotime($this->input->post("fechaDesde")));;
+    $hasta = date("Y-m-d", strtotime($this->input->post("fechaHasta")));;
 
      $datos["estadoPedido"]   = $this->M_pedidos->RecuperarEstado();
      $datos["pedidos"]        = $this->M_pedidos->RecuperarPedidosFecha($desde, $hasta);
@@ -112,36 +113,23 @@ class C_pedidos extends MX_Controller {
 
   public function RegistrarPedido(){
     // $this->input->post();
-    $tipoPedido = $this->input->post("slcTipoPedido");
+    $fechaCarga = date("Y-m-d H:i:s");
     $datosPedido = array(
-      'id_tipopedido'       =>  $tipoPedido,
+      'id_tipopedido'       =>  1,
+      'id_pedidotecnico'    =>  null,
+      'solicita'            =>  $this->input->post("txtSolicitante"),
+      'retira'              =>  null,
       'titulo'              =>  $this->input->post("txtTitulo"),
       'descripcion'         =>  $this->input->post("txtDescripcion"),
-      'dependenciaorigen'   =>  $this->input->post("slcDependencia")
+      'dependenciaorigen'   =>  $this->input->post("slcDependencia"),
+      'numeroservicio'      =>  null,
+      'fechaservicio'       =>  null,
+      'aud_fechaalta'       =>  $fechaCarga,
+      'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
     );
     $idPedido = $this->M_pedidos->AltaPedido($datosPedido);
 
-    $fechaCarga = date("Y-m-d H:i:s");
-    //si el tipo pedido no es de soporte, tiene elementos y se tienen que cargar
-    if($tipoPedido != 1){
-      foreach($this->input->post('slcElemento[]') as $key=>$value){
-        $elemento = $this->input->post('slcElemento[]')[$key];
-        $cantidad = $this->input->post('txtCantidad[]')[$key];
-        $observacion = $this->input->post('txtObservacion[]')[$key];
 
-        $pedidoElementos = array(
-        'id_pedido'       => $idPedido,
-        'id_elemento'     => $elemento,
-        'cantidad'        => $cantidad,
-        'observacion'     => $observacion,
-        'fecha'           => $fechaCarga
-        );
-
-        $this->M_pedidos->AltaElementos($pedidoElementos);
-      }
-      //una vez que se terminan de cargar todos los productos tengo que redireccionar a una pagina de exito
-      //u error
-    }
     //si no entra en el if, quiere decir que no tenia elementos para agregar
     redirect(base_url() . "/pedidos/C_pedidos/");
   }
@@ -188,13 +176,15 @@ class C_pedidos extends MX_Controller {
   }
 
   public function NuevoMovimiento(){
-
+  $fechaCarga = date("Y-m-d H:i:s");
     $datosMovimiento = array(
      'id_estadopedido'    => $this->input->post('slctEstadoMovimiento'),
      'fechamovimiento'    => $this->input->post('fechaMovimiento'),
      'id_pedido'          => $this->input->post('idPedido'),
      'id_tipomovimiento'  => $this->input->post('slctTipoMovimiento'),
-     'dependenciadestino' => $this->input->post('slctDestino')
+     'dependenciadestino' => $this->input->post('slctDestino'),
+     'aud_fechaalta'       =>  $fechaCarga,
+     'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
    );
 
    $this->M_pedidos->AltaMovimientos($datosMovimiento);
@@ -209,7 +199,9 @@ class C_pedidos extends MX_Controller {
       'fechamovimiento'    => $fechaCarga,
       'id_pedido'          => $this->input->post('idPedido'),
       'id_tipomovimiento'  => 4, //ciclo completado
-      'dependenciadestino' => 126 //mdh
+      'dependenciadestino' => 126, //mdh
+      'aud_fechaalta'       =>  $fechaCarga,
+      'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
     );
     $consulta = $this->M_pedidos->AltaMovimientos($datosMovimiento);
     if ($consulta == true) {
@@ -299,4 +291,63 @@ class C_pedidos extends MX_Controller {
     echo json_encode($data);
   }
 
+  /*Servicio tecnico */
+  public function ServicioTecnico(){
+    $datos["dependencia"]     = $this->M_pedidos->RecuperarDependencias();
+    $datos["estado"]          = $this->M_pedidos->RecuperarEstado();
+    $datos["tipoMovimiento"]  = $this->M_pedidos->RecuperarTipoMovimiento();
+    $datos["elemento"]        = $this->M_pedidos->RecuperarElemento();
+
+    $datos["tipoPedidoTecnico"] = $this->M_pedidos->RecuperarTipoPedidoTecnico();
+    
+    $this->load->view('plantilla/V_cabecera');
+    $this->load->view('plantilla/V_menu');
+    $this->load->view('pedidos/V_altaServicioTecnico',$datos);
+    $this->load->view('plantilla/V_pie');
   }
+
+public function RegistrarServicioTecnico(){
+//formateo la fecha, para evitar errores en la bd
+  $fechaServicio = date("Y-m-d", strtotime($this->input->post("txtFechaServicio")));
+
+  $fechaCarga = date("Y-m-d H:i:s");
+  $datosPedido = array(
+    'id_tipopedido'       =>  2, //soporte tecnico
+    'id_pedidotecnico'    =>  $this->input->post("slcTipoPedido"),
+    'solicita'            =>  $this->input->post("txtSolicitante"),
+    'retira'              =>  $this->input->post("txtRetira"),
+    'titulo'              =>  $this->input->post("txtTitulo"),
+    'descripcion'         =>  $this->input->post("txtDescripcion"),
+    'dependenciaorigen'   =>  $this->input->post("slcDependencia"),
+    'numeroservicio'      =>  $this->input->post("txtNumeroServicio"),
+    'fechaservicio'       =>  $fechaServicio,
+    'aud_fechaalta'       =>  $fechaCarga,
+    'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
+  );
+  
+  $idPedido = $this->M_pedidos->AltaPedidoTecnico($datosPedido);
+    foreach($this->input->post('slcElemento[]') as $key=>$value){
+      $elemento = $this->input->post('slcElemento[]')[$key];
+      $cantidad = $this->input->post('txtCantidad[]')[$key];
+      $marca = $this->input->post('txtMarca[]')[$key];
+      $modelo = $this->input->post('txtModelo[]')[$key];
+      $numeroSerie = $this->input->post('txtNumeroSerie[]')[$key];
+      $observacion = $this->input->post('txtObservacion[]')[$key];
+
+      $pedidoElementos = array(
+      'id_elemento'     => $elemento,
+      'cantidad'        => $cantidad,
+      'marca'           => $marca,
+      'modelo'          => $modelo,
+      'numeroSerie'     => $numeroSerie,
+      'observacion'     => $observacion,
+      'aud_fechaalta'   => $fechaCarga
+      );
+      
+      $this->M_pedidos->AltaElementosTecnico($pedidoElementos ,$idPedido);
+    }
+
+    redirect(base_url() . "/pedidos/C_pedidos/");
+}
+
+}

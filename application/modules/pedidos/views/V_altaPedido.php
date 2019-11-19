@@ -24,20 +24,19 @@
               <div class="row">
                 <div class="col-md-12">
                 
-                <div class="row">
-                    <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-6">
                       <div class="form-group">
-                        <label for="">Tipo Pedido</label>
-                        <select name="slcTipoPedido" onChange="TipoPedido(this)" class="form-control">
-                        <option value="" selected disabled>Seleccione..</option>
-                          <?php foreach($tipoPedido as $row) : 
-                            echo "<option value='".$row->id_tipopedido."'>".$row->descripcion . "</option>";
-                          endforeach;
-                          ?>
-                        </select>
+                        <label for="">Personal Solicitante </label>
+                        <input type="text" name="txtSolicitante" class="form-control">
                       </div>
                     </div>
+
+                   
+
                   </div>
+                  <hr>
+
 
                   <div class="form-group">
                     <label for="">Titulo (*)</label>

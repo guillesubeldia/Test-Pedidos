@@ -35,36 +35,40 @@
             <?php endif ?>
             <div class="table-toolbar">
               <table id="tablaPedidos" class="table table-bordered table-hover">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col-md-2">
                         <div class="btn-group">
-                            <a href="<?php echo base_url().'Pedidos/C_pedidos/CargarPedido'?>" class="btn btn-block btn-info"><i class="fa fa-plus"></i> Nuevo Pedido
+                            <a href="<?php //echo base_url().'Pedidos/C_pedidos/CargarPedido'?>" class="btn btn-block btn-info"><i class="fa fa-plus"></i> Nuevo Pedido
                             </a>
                         </div>
                     </div>
+                </div> -->
+                
+          <div class="row">
+            <div class="col-md-4">
+                <div class="input-group">
+                  <div id="datepicker" class="input-group date datepicker" data-date-format="mm-dd-yyyy">
+                    <input class="form-control" type="text" name="fechaDesde" readonly>
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i> Desde</span>
+                  </div>
                 </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="input-group">
-                          <span class="input-group-addon">Fecha Desde</span>
-                          <input type="date" class="form-control" name="fechaDesde" required>
-                        </div>
-                    </div>
+            </div>
 
-                    <div class="col-md-4">
-                        <div class="input-group">
-                          <span class="input-group-addon">Hasta</span>
-                          <input type="date" class="form-control" name="fechaHasta" required>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                          <button  type="submit" name="button" class="btn btn-primary pull-left" >Buscar</button>
-                        </div>
-                    </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                  <div id="datepicker" class="input-group date datepicker" data-date-format="mm-dd-yyyy">
+                    <input class="form-control" type="text" name="fechaHasta" readonly>
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i> Hasta</span>
+                  </div>
                 </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                  <button  type="submit" name="button" class="btn btn-primary pull-left" >Buscar</button>
+                </div>
+            </div>
+          </div>
             </form>
                 <br>
                 <thead>
