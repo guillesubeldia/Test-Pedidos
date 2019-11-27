@@ -140,10 +140,12 @@ public function MovimientoPedido($idPedido){
 }
 
 public function DatosMovimiento($id){
-    $this->db->select("p.id_pedido, p.titulo,p.descripcion, p.fechaalta, dep.descripcion AS dependencia, tp.descripcion AS tipopedido");
+    $this->db->select("p.id_pedido,p.id_tipopedido, p.titulo,p.descripcion, p.fechaalta, dep.descripcion AS dependencia, tp.descripcion AS tipopedido,p.numeroservicio, p.fechaservicio,pd.descripcion AS pedidotecnico, p.retira, p.solicita");
     $this->db->from("pedido AS p");
     $this->db->join("dependencia AS dep","p.dependenciaorigen = dep.id_dependencia");
     $this->db->join("tipopedido AS tp","p.id_tipopedido = tp.id_tipopedido");
+    $this->db->join('pedidotecnico AS pd', 'pd.id_pedidotecnico = p.id_pedidotecnico', 'left');
+
     $this->db->where("p.id_pedido",$id);
     $this->db->where("p.activo",1);
     $consulta = $this->db->get();
@@ -158,7 +160,7 @@ public function DatosMovimiento($id){
   }
 
 public function ElementosPedido($idPedido){
-    $this->db->select("dp.id_detallepedido, dp.id_elementodetalle, e.descripcion AS nombreelemento, ed.cantidad, ed.observacion,,
+    $this->db->select("e.id_elemento,dp.id_detallepedido, dp.id_elementodetalle, e.descripcion AS nombreelemento, ed.cantidad, ed.observacion,,
 ed.marca, ed.modelo, ed.numeroserie");
     $this->db->from("detallepedido AS dp");
     $this->db->join("elementodetalle AS ed","dp.id_elementodetalle = ed.id_elementodetalle");
@@ -170,12 +172,13 @@ ed.marca, ed.modelo, ed.numeroserie");
 }
 
 public function DatosPedido($idPedido){
-    $this->db->select("p.id_pedido,p.titulo, p.descripcion, p.solicita ,p.retira, p.numeroservicio, DATE_FORMAT(p.fechaservicio, '%d/%m/%Y') as fechaservicio, p.id_pedidotecnico,
+    $this->db->select("p.barcode,p.id_pedido,p.titulo, p.descripcion, p.solicita ,p.retira, p.numeroservicio, DATE_FORMAT(p.fechaservicio, '%d/%m/%Y') as fechaservicio, p.id_pedidotecnico, pt.descripcion as pedidotecnico,
                         tp.id_tipopedido,tp.descripcion AS tipopedido,
                         dest.id_dependencia,dest.descripcion AS 'dependenciaorigen'");
     $this->db->from("pedido AS p");
     $this->db->join("tipopedido AS tp","tp.id_tipopedido = p.id_tipopedido");
     $this->db->join("dependencia AS dest","dest.id_dependencia = p.dependenciaorigen");
+    $this->db->join("pedidotecnico AS pt","pt.id_pedidotecnico = p.id_pedidotecnico");
     $this->db->where("p.activo",1);
     $this->db->where("p.id_pedido",$idPedido);
 
@@ -258,8 +261,20 @@ if($this->db->trans_status() === FALSE) {
 }
 public function EditarPedidoDetalle($pedidoElementos, $idDetallePedido){
     $this->db->trans_begin();
-    $this->db->where('id_detallepedido', $idDetallePedido);
-    $this->db->update('detallepedido', $pedidoElementos);
+    $this->db->where('id_elementodetalle', $idDetallePedido);
+    $this->db->update('elementodetalle', $pedidoElementos);
+
+    /*
+     $detallePedido = array(
+                    'id_pedido'          => $idPedido,
+                    'id_elementodetalle' => $idElemento);
+
+
+    $this->db->insert('detallepedido', $detallePedido);
+    */ 
+
+
+
     if($this->db->trans_status() === FALSE) {
         $this->db->trans_rollback();
         $this->db->trans_off();
@@ -272,10 +287,30 @@ public function EditarPedidoDetalle($pedidoElementos, $idDetallePedido){
 }
 
 //baja
+public function EliminarDetallePedido($id,$detallePedido){
+    $this->db->where('id_elementodetalle', $id);
+    $this->db->update('detallepedido', $detallePedido);
+    
+   echo $this->db->last_query();
+}
+
 public function EliminarElemento($id){
     $this->db->trans_begin();
-    $this->db->where('id_detallepedido', $id);
-    $this->db->delete('detallepedido');
+    //primero pongo como inactivo en la tabla detallepedido
+    $this->db->set('activo', '0');
+    $this->db->where('id_elementodetalle', $id);
+    $this->db->update('detallepedido');
+    //luego como inactivo el elemento de la tabla elementodetalle
+
+    $fechaCarga = date("Y-m-d H:i:s");
+
+    $this->db->set('activo', '0');
+    $this->db->set('aud_fechamodi', $fechaCarga);
+    $this->db->set('aud_usuariomodi', $this->session->userdata('nombreUsuario'));
+    $this->db->where('id_elementodetalle', $id);
+    $this->db->update('elementodetalle');
+
+   
 
     if($this->db->trans_status() === FALSE) {
         $this->db->trans_rollback();
@@ -344,7 +379,8 @@ public function AltaElementosTecnico($pedidoElementos,$idPedido){
 
 
     $this->db->insert('detallepedido', $detallePedido);
-
+    
+    
 
     if($this->db->trans_status() === FALSE) {
         $this->db->trans_rollback();
@@ -357,5 +393,27 @@ public function AltaElementosTecnico($pedidoElementos,$idPedido){
     }
 }
 
+
+public function CrearBarcode($idpedido){
+    
+    $this->db->select("barcode");
+    $this->db->from("pedido");
+    $this->db->where("id_pedido",$idpedido);
+    $consultaBarcode = $this->db->get()->row();
+
+    if($consultaBarcode->barcode != null){
+        
+    }else{
+        $this->db->select('CONCAT(id_pedido,DATE_FORMAT(fechaalta, "%c%e%y")) AS newbarcode');
+        $this->db->from("pedido");
+        $this->db->where("id_pedido",$idpedido);
+        $consultaBarcode = $this->db->get()->row();
+
+        $this->db->set('barcode', $consultaBarcode->newbarcode);
+        $this->db->where('id_pedido', $idpedido);
+        $this->db->update('pedido');
+    }
+   
+}
 
 }

@@ -27,9 +27,14 @@ class C_pedidos extends MX_Controller {
     $datos["estadoPedido"] = $this->M_pedidos->RecuperarEstado();
     $datos["dependencia"] = $this->M_pedidos->RecuperarDependencias();
     $datos["tipoMovimiento"] = $this->M_pedidos->RecuperarTipoMovimiento();
+
+    $datos["tipoPedidoTecnico"]  =$this->M_pedidos->RecuperarTipoPedidoTecnico();
+
+   
     $this->load->view('plantilla/V_cabecera');
     $this->load->view('plantilla/V_menu');
     $this->load->view('pedidos/V_tablaPedidos',$datos);
+    // $this->load->view('pedidos/V_popUp',$datos);
     $this->load->view('plantilla/V_pie');
   }
 
@@ -175,44 +180,72 @@ class C_pedidos extends MX_Controller {
     $this->M_pedidos->DatosMovimiento($id);
   }
 
-  public function NuevoMovimiento(){
-  $fechaCarga = date("Y-m-d H:i:s");
-    $datosMovimiento = array(
-     'id_estadopedido'    => $this->input->post('slctEstadoMovimiento'),
-     'fechamovimiento'    => $this->input->post('fechaMovimiento'),
-     'id_pedido'          => $this->input->post('idPedido'),
-     'id_tipomovimiento'  => $this->input->post('slctTipoMovimiento'),
-     'dependenciadestino' => $this->input->post('slctDestino'),
-     'aud_fechaalta'       =>  $fechaCarga,
-     'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
-   );
+public function NuevoMovimiento(){
+  if($this->input->post('idtipoPedido') == 1){
+      $fechaCarga = date("Y-m-d H:i:s");
+      $datosMovimiento = array(
+        'id_estadopedido'    => $this->input->post('slctEstadoMovimiento'),
+        'fechamovimiento'    => $this->input->post('fechaMovimiento'),
+        'id_pedido'          => $this->input->post('idPedido'),
+        'id_tipomovimiento'  => $this->input->post('slctTipoMovimiento'),
+        'dependenciadestino' => $this->input->post('slctDestino'),
+        'aud_fechaalta'       =>  $fechaCarga,
+        'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
+      );
 
-   $this->M_pedidos->AltaMovimientos($datosMovimiento);
-
-   redirect(base_url() . "/pedidos/C_pedidos/");
-  }
-
-  public function FinalizarMovimiento(){
+      $this->M_pedidos->AltaMovimientos($datosMovimiento);
+  }else{
+    //primero insertamos los datos del movimiento que se va a realizar
     $fechaCarga = date("Y-m-d H:i:s");
-    $datosMovimiento = array(
-      'id_estadopedido'    => 4, //finalizado
-      'fechamovimiento'    => $fechaCarga,
-      'id_pedido'          => $this->input->post('idPedido'),
-      'id_tipomovimiento'  => 4, //ciclo completado
-      'dependenciadestino' => 126, //mdh
-      'aud_fechaalta'       =>  $fechaCarga,
-      'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
-    );
-    $consulta = $this->M_pedidos->AltaMovimientos($datosMovimiento);
-    if ($consulta == true) {
-      $data['status'] = 'ok';
-      $data['result'] = 'ok';
-    } else {
-      $data['status'] = 'error';
-      $data['result'] = '';
-    }
-    echo json_encode($data);
+      $datosMovimiento = array(
+        'id_estadopedido'    => $this->input->post('slctEstadoMovimiento'),
+        'fechamovimiento'    => $this->input->post('fechaMovimiento'),
+        'id_pedido'          => $this->input->post('idPedido'),
+        'id_tipomovimiento'  => $this->input->post('slctTipoMovimiento'),
+        'dependenciadestino' => $this->input->post('slctDestino'),
+        'aud_fechaalta'       =>  $fechaCarga,
+        'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
+      );
+
+      $this->M_pedidos->AltaMovimientos($datosMovimiento);
+    //segundo actualizamos el estado del pedido tecnico
+      $id = $this->input->post('idPedido');
+      $datosPedido = array(
+        'id_pedidotecnico'    =>  $this->input->post('idPedidoTecnico'),
+        'retira'              =>  $this->input->post('retira'),
+        'numeroservicio'      =>  $this->input->post('numeroServicio'),
+        'fechaservicio'       =>  $this->input->post('fechaServicio'),
+        'aud_fechamodi'       =>  $fechaCarga,
+        'aud_usuariomodi'     =>  $this->session->userdata('nombreUsuario'),
+      );
+
+      $this->M_pedidos->EditarPedido($datosPedido,$id);
+  } 
+
+  redirect(base_url() . "/pedidos/C_pedidos/");
+}
+
+public function FinalizarMovimiento(){
+  $fechaCarga = date("Y-m-d H:i:s");
+  $datosMovimiento = array(
+    'id_estadopedido'     =>  4, //finalizado
+    'fechamovimiento'     =>  $fechaCarga,
+    'id_pedido'           =>  $this->input->post('idPedido'),
+    'id_tipomovimiento'   =>  4, //ciclo completado
+    'dependenciadestino'  =>  126, //mdh
+    'aud_fechaalta'       =>  $fechaCarga,
+    'aud_usuarioalta'     =>  $this->session->userdata('nombreUsuario'),
+  );
+  $consulta = $this->M_pedidos->AltaMovimientos($datosMovimiento);
+  if ($consulta == true) {
+    $data['status'] = 'ok';
+    $data['result'] = 'ok';
+  } else {
+    $data['status'] = 'error';
+    $data['result'] = '';
   }
+  echo json_encode($data);
+}
 
   public function EditarPedido($idPedido){
     $datos["elementosPedido"] = $this->M_pedidos->ElementosPedido($idPedido);
@@ -230,66 +263,97 @@ class C_pedidos extends MX_Controller {
     $this->load->view('plantilla/V_pie');
   }
 
-  public function ActualizarPedido(){
-    $idPedido = $this->input->post("idPedido");
-    $tipoPedido = $this->input->post("slcTipoPedido");
-    $datosPedido = array(
-      'id_tipopedido'       =>  $tipoPedido,
-      'titulo'              =>  $this->input->post("txtTitulo"),
-      'descripcion'         =>  $this->input->post("txtDescripcion"),
-      'dependenciaorigen'   =>  $this->input->post("slcDependencia")
-    );
-    $this->M_pedidos->EditarPedido($datosPedido,$idPedido);
+public function ActualizarPedido(){
 
-    $fechaCarga = date("Y-m-d H:i:s");
-    //si el tipo pedido no es de soporte, tiene elementos y se tienen que cargar
-    if($tipoPedido != 1 && !empty($this->input->post('slcElemento[]')) ){
-      foreach($this->input->post('slcElemento[]') as $key=>$value){
-        $elemento = $this->input->post('slcElemento[]')[$key];
-        $cantidad = $this->input->post('txtCantidad[]')[$key];
-        $observacion = $this->input->post('txtObservacion[]')[$key];
 
-      //Si no esta este dato, todos se van a insertar. Si esta solamente se va a actualizar
-      if(!empty($this->input->post('idElemento[]'))){
-        $idDetallePedido = $this->input->post('idElemento[]')[$key];
-        $pedidoElementos = array(
-          'id_pedido'       => $idPedido,
-          'id_elemento'     => $elemento,
-          'cantidad'        => $cantidad,
-          'observacion'     => $observacion,
-          'fecha'           => $fechaCarga
-          );
-          //aca hago el update con esos dos datos.
-          $this->M_pedidos->EditarPedidoDetalle($pedidoElementos, $idDetallePedido);
-      }else{
-        $pedidoElementos = array(
-          'id_pedido'       => $idPedido,
-          'id_elemento'     => $elemento,
-          'cantidad'        => $cantidad,
-          'observacion'     => $observacion,
-          'fecha'           => $fechaCarga
-          );
-          //aca voy a hacer el insert.
-          $this->M_pedidos->AltaElementos($pedidoElementos);
-        }
+  $idPedido = $this->input->post("idPedido");
+  $tipoPedido = $this->input->post("slcTipoPedido");
+  $fechaServicio = date("Y-m-d", strtotime($this->input->post("txtFechaServicio")));
+
+  $fechaCarga = date("Y-m-d H:i:s");
+  $datosPedido = array(
+    'id_tipopedido'       =>  $tipoPedido, 
+    'id_pedidotecnico'    =>  $this->input->post("slcTipoPedido"),
+    'solicita'            =>  $this->input->post("txtSolicitante"),
+    'retira'              =>  $this->input->post("txtRetira"),
+    'titulo'              =>  $this->input->post("txtTitulo"),
+    'descripcion'         =>  $this->input->post("txtDescripcion"),
+    'dependenciaorigen'   =>  $this->input->post("slcDependencia"),
+    'numeroservicio'      =>  $this->input->post("txtNumeroServicio"),
+    'fechaservicio'       =>  $fechaServicio,
+    'aud_fechamodi'       =>  $fechaCarga,
+    'aud_usuariomodi'     =>  $this->session->userdata('nombreUsuario'),
+  );
+  $this->M_pedidos->EditarPedido($datosPedido,$idPedido);
+  //si el tipo pedido no es de soporte, tiene elementos y se tienen que cargar
+  if($tipoPedido != 1 && !empty($this->input->post('slcElemento[]')) ){
+    
+
+
+    foreach($this->input->post('slcElemento[]') as $key=>$value){
+      $elemento = $this->input->post('slcElemento[]')[$key];
+      $cantidad = $this->input->post('txtCantidad[]')[$key];
+      $marca = $this->input->post('txtMarca[]')[$key];
+      $modelo = $this->input->post('txtModelo[]')[$key];
+      $numeroSerie = $this->input->post('txtNumeroSerie[]')[$key];
+      $observacion = $this->input->post('txtObservacion[]')[$key];
+    //Si no esta este dato, todos se van a insertar. Si esta solamente se va a actualizar
+    
+    if(!empty($this->input->post('idElemento[]')[$key])){
+   
+      $idDetallePedido = $this->input->post('idElemento[]')[$key];
+      $pedidoElementos = array(
+        //'id_pedido'       => $idPedido,
+        'id_elemento'     => $elemento,
+        'cantidad'        => $cantidad,
+        'marca'           => $marca,
+        'modelo'          => $modelo,
+        'numeroSerie'     => $numeroSerie,
+        'observacion'     => $observacion,
+        'aud_usuariomodi' => $this->session->userdata('nombreUsuario'),
+        'aud_fechamodi'   => $fechaCarga
+        );
+        
+        //aca hago el update con esos dos datos.
+        $this->M_pedidos->EditarPedidoDetalle($pedidoElementos, $idDetallePedido);
+    }else{
+     $pedidoElementos = array(
+      'id_elemento'     => $elemento,
+      'cantidad'        => $cantidad,
+      'marca'           => $marca,
+      'modelo'          => $modelo,
+      'numeroSerie'     => $numeroSerie,
+      'observacion'     => $observacion,
+      'aud_usuarioalta' => $this->session->userdata('nombreUsuario'),
+      'aud_fechaalta'   => $fechaCarga
+      );
+      
+        //aca voy a hacer el insert.
+      $this->M_pedidos->AltaElementosTecnico($pedidoElementos,$idPedido);
       }
     }
-    //redireccionar
-    redirect(base_url() . "/pedidos/C_pedidos/");
   }
+  
+  //redireccionar
+  redirect(base_url() . "/pedidos/C_pedidos/");
+}
 
   public function EliminarElemento(){
-    $id = $this->input->post("idPedido");
-    $consulta= $this->M_pedidos->EliminarElemento($id);
-    if ($consulta == true) {
-      $data['status'] = 'ok';
-      $data['result'] = 'ok';
-    } else {
-      $data['status'] = 'error';
-      $data['result'] = '';
-    }
-    echo json_encode($data);
+  $id = $this->input->post("idElemento");
+  //para la tabla detallepedido tego que ponerlo como inactivo
+  $consulta = $this->M_pedidos->EliminarElemento($id);
+
+  if ($consulta == true) {
+    $data['status'] = 'ok';
+    $data['result'] = 'Ejecutado correctamente';
+  } else {
+    $data['status'] = 'error';
+    $data['result'] = 'Errores';
   }
+  echo json_encode($data);
+}
+
+ 
 
   /*Servicio tecnico */
   public function ServicioTecnico(){
@@ -341,13 +405,54 @@ public function RegistrarServicioTecnico(){
       'modelo'          => $modelo,
       'numeroSerie'     => $numeroSerie,
       'observacion'     => $observacion,
+      'aud_usuarioalta' => $this->session->userdata('nombreUsuario'),
       'aud_fechaalta'   => $fechaCarga
       );
       
       $this->M_pedidos->AltaElementosTecnico($pedidoElementos ,$idPedido);
     }
+    if($this->input->post("slcTipoPedido") == 1){
+      // redirect(base_url() . "/pedidos/C_pedidos/GeneraRecibo/".$idPedido);
+    }else{
+      // redirect(base_url() . "/pedidos/C_pedidos/GeneraComprobante/".$idPedido);
+    }
 
-    redirect(base_url() . "/pedidos/C_pedidos/");
+     $datos["pedidos"] = $this->M_pedidos->RecuperarPedidos();
+    $datos["estadoPedido"] = $this->M_pedidos->RecuperarEstado();
+    $datos["dependencia"] = $this->M_pedidos->RecuperarDependencias();
+    $datos["tipoMovimiento"] = $this->M_pedidos->RecuperarTipoMovimiento();
+
+    $datos["tipoPedidoTecnico"]  =$this->M_pedidos->RecuperarTipoPedidoTecnico();
+
+   
+    $this->load->view('plantilla/V_cabecera');
+    $this->load->view('plantilla/V_menu');
+    $this->load->view('pedidos/V_tablaPedidos',$datos);
+    // $this->load->view('plantilla/V_popUp',$datos);
+    $this->load->view('plantilla/V_pie');
+    
 }
+
+public function popup(){
+  $datos["idPedido"] = 21;
+  
+  $this->load->view('plantilla/V_popUp',$datos);
+ 
+}
+
+public function GeneraComprobante($idpedido){
+  $this->M_pedidos->CrearBarcode($idpedido);
+  $datos["elementosPedido"] = $this->M_pedidos->ElementosPedido($idpedido);
+  $datos["datosPedido"] = $this->M_pedidos->DatosPedido($idpedido);
+  $this->load->view('pedidos/boleta',$datos);
+}
+
+public function GeneraRecibo($idpedido){
+  $this->M_pedidos->CrearBarcode($idpedido);
+  $datos["elementosPedido"] = $this->M_pedidos->ElementosPedido($idpedido);
+  $datos["datosPedido"] = $this->M_pedidos->DatosPedido($idpedido);
+  $this->load->view('pedidos/Comprobante',$datos);
+}
+
 
 }

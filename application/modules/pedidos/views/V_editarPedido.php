@@ -15,12 +15,22 @@ foreach($datosPedido as $row):
     $pedidotecnico          = $row->id_pedidotecnico;
 endforeach;
 
+
+
+
  if (!empty($elementosPedido)) {
     $estado="block";
  }else{
     $estado="none";
  }
+
+ if($tipoPedido === '2'){
+  
+      $estado="block";
+ }
 ?>
+
+
 <!-- INICIO CUERPO -->
 <div class="content-wrapper">
   <div class="content-header">
@@ -51,7 +61,7 @@ endforeach;
                   <div class="col-md-12">
                     <div class="form-group">
                       <label for="">Tipo Pedido</label>
-                      <select name="slcTipoPedido" onChange="TipoPedido(this)" class="form-control" disabled>
+                      <select name="slcTipoPedido" onChange="TipoPedido(this)" class="form-control bloqueado" >
                       <option value="<?php echo $tipoPedido;?>" selected><?php echo $descirpcionTipoPedido;?></option>
                         <?php foreach($tipoPedidoArray as $row) : 
                           echo "<option value='".$row->id_tipopedido."'>".$row->descripcion . "</option>";
@@ -72,7 +82,7 @@ endforeach;
                     </div>
                   </div>
 
-                  <div class="col-md-6">
+                  <div class="col-md-6" style="display:<?php echo $estado;?>">
                     <div class="form-group">
                       <label for="">Personal Retira </label>
                       <input type="text" value="<?php echo $retira;?>" name="txtRetira" class="form-control">
@@ -89,7 +99,7 @@ endforeach;
 
                   <div class="form-group">
                     <label for="">Descripcion (*)</label>
-                    <textarea type="text" name="txtDescripcion" value="<?php echo $descripcionPedido;?>" class="form-control"></textarea>
+                    <textarea type="text" name="txtDescripcion" class="form-control"><?php echo $descripcionPedido;?></textarea>
                   </div>
 
                   <div class="row">
@@ -112,11 +122,12 @@ endforeach;
 
 
               <hr>
-              <div class="row">
+            
+              <div class="row" style="display:<?php echo $estado;?>">
                 <div class="col-md-6">
                   <div class="form-group">
                     <label for="">Numero Servicio (*)</label>
-                    <input type="text" name="txtNumeroServicio" class="form-control">
+                    <input type="text" value="<?php echo $numeroservicio;?>" name="txtNumeroServicio" class="form-control">
                     <span class="label label-warning">* Datos que figuran en la boleta</span>
                   </div>
                 </div>
@@ -131,6 +142,8 @@ endforeach;
                     <!-- <input type="date" name="txtFechaServicio" class="form-control formateado"> -->
                   </div>
                 </div>
+
+
               </div>        
               <hr>            
 
@@ -166,7 +179,7 @@ endforeach;
                             foreach($elementosPedido as $fila){
                                 echo "<tr>";
                                 echo "<td>";
-                                echo "<input type='hidden' name='idElemento[".$pos."]' value='".$fila->id_detallepedido."'>";
+                                echo "<input type='hidden' name='idElemento[".$pos."]' value='".$fila->id_elementodetalle."'>";
                                     echo "<select class='form-control' name='slcElemento[".$pos."]' tabindex='1'>";
                                         echo "<option value='".$fila->id_elemento."' selected>".$fila->nombreelemento."</option>";
                                         foreach($elemento as $row) : 
@@ -180,28 +193,14 @@ endforeach;
                                 echo "<td> <input type='text' name='txtModelo[".$pos."]' value='".$fila->modelo."' class='form-control'> </td>";
                                 echo "<td> <input type='text' name='txtNumeroSerie[".$pos."]' value='".$fila->numeroserie."' class='form-control'> </td>";
                                 echo "<td> <input type='text' name='txtObservacion[".$pos."]' value='".$fila->observacion."' class='form-control'> </td>";
-                                echo "<td> <button type='button' class='btn btn-danger' onclick='EliminarDeLista(this,".$fila->id_detallepedido.")'>Eliminar</button> </td>";
+                                echo "<td> <button type='button' class='btn btn-danger' onclick='EliminarDeLista(this,".$fila->id_elementodetalle.")'>Eliminar</button> </td>";
                                 $pos++;
                                 echo "</tr>";
                             }
                         }
                         ?>
 
-                          <td>
-                            <select class="form-control" name="slcElemento[]" tabindex="1">
-                            <option value='' selected disabled>Seleccione ...</option>
-                            <?php foreach($elemento as $row) : 
-                              echo "<option value='".$row->id_elemento."'>".$row->descripcion . "</option>";
-                            endforeach;
-                            ?>
-                            </select>
-                          </td>
-                          <td> <input type="text" name="txtCantidad[]" value="1" class="form-control"> </td>
-                          <td> <input type="text" name="txtMarca[]" class="form-control"> </td>
-                          <td> <input type="text" name="txtModelo[]" class="form-control"> </td>
-                          <td> <input type="text" name="txtNumeroSerie[]" class="form-control"> </td>
-                          <td> <input type="text" name="txtObservacion[]" class="form-control"> </td>
-                          <td> <button type="button" class="btn btn-danger" onclick="EliminarElemento(this)">Eliminar</button> </td>
+                          
                         </tr>
                       </tbody>
                     </table>
@@ -235,8 +234,12 @@ endforeach;
 <!-- FIN CUERPO -->
 
 <script type="text/javascript">
-
-
+$(document).ready(function() {
+    $('.bloqueado').attr('disabled', 'disabled');
+});
+$('#form-pedido').submit(function() {
+    $('.bloqueado').removeAttr('disabled');
+});
 //function RecuperarElemento(){
 function agregarElemento(data) {
   $.post("<?php echo base_url();?>pedidos/C_pedidos/LeerElementos",
@@ -246,7 +249,7 @@ function agregarElemento(data) {
   });
 }
 
-var posicionCampo = 1;
+var posicionCampo =<?php echo $pos;?>;
 //function agregarElemento(data) {
  function agregarCampo(data){ 
 
@@ -259,6 +262,10 @@ var posicionCampo = 1;
   nuevaCelda = nuevaFila.insertCell(-1);
 /* Con la celda creada, insertamos dinámicamente un campo de texto, el cual almacenaremos en un array llamado nombre, con una posición equivalente a la variable posicionCampo. Una vez terminado, repetimos la acción asignando al array respectivo */
  /*Esto lo voy a agregar para que se pueda cargar automaticamente los elementos */
+
+
+nuevaCelda.innerHTML ="<input type='hidden' name='idElemento["+ posicionCampo +"]'>";
+
   nuevaCelda.innerHTML ="<td><select name='slcElemento["+ posicionCampo +"]' id='selectDinamico' data-placeholder='Seleccione ...' class='form-control select2' required>"+data+"</select></td>";
   nuevaCelda = nuevaFila.insertCell(-1);
   nuevaCelda.innerHTML ="<td><input name='txtCantidad[" + posicionCampo + "]' value='1' type='text' class='form-control' required></td>";
@@ -294,14 +301,15 @@ function EliminarElemento(obj) {
 }
 
 function EliminarDeLista(obj,id){
-  idPedido = id;
+  idElemento = id;
+ 
   $.ajax({
       type:'POST',
-      url:"<?php echo base_url() . '/Pedidos/C_Pedidos/EliminarElemento';?>",
+      url:"<?php echo base_url() . 'Pedidos/C_pedidos/EliminarElemento';?>",
       dataType: "json",
-      data:{idPedido:idPedido},
+      data:{idElemento:idElemento},
       success:function(data){
-        console.log(idPedido);
+        console.log("INSIDE DEL SUCCESS");
           if(data.status == 'ok'){
            //si entra en la funcion, elimina la fila
             var fila = obj;
@@ -312,6 +320,6 @@ function EliminarDeLista(obj,id){
               root.removeChild(fila);
           }
        }
-   });  
+   });   
 }
 </script>

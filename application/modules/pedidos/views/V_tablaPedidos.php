@@ -103,6 +103,8 @@
                 ?>
                   </tbody>
               </table>
+
+              
             </div>
           </div>
           <!-- /.box-body -->
@@ -133,8 +135,16 @@
         </div>
       </div>
 
-
       <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Personal Solicitante</label>
+            <input type="text" id="solicita" class="form-control" readonly>
+          </div>
+        </div>
+      </div>
+
+       <div class="row">
         <div class="col-md-12">
           <div class="form-group">
             <label>Descripcion</label>
@@ -143,6 +153,8 @@
         </div>
 
       </div>
+
+      
 
 
 
@@ -161,7 +173,17 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row" id="divEstadoPedidoTecnico">
+        <div class="col-md-6">
+          <label for="">Estado Pedido Tecnico</label>        
+          <input type="text" name="pedidoTecnico" id="pedidoTecnico" class="form-control" disabled>
+
+        </div>
+      </div>
+
+      
+
+      <div class="row"><br>
         <div class="col-md-12 text-center">
           <button type="button" aling="center" onclick="NuevoMovimiento()" class="btn btn-success">Nuevo Movimiento</button>
         </div>
@@ -174,6 +196,14 @@
 
         </div>
       </div>
+
+
+      <div class="mensajeError" id="mensajeError" style="display:none;">
+          <div class="alert alert-danger" role="alert">
+            <strong>¡Error!</strong>Haga click en nuevo movimiento para agregar mas datos.
+          </div>
+      </div>
+        
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
@@ -196,11 +226,13 @@
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Movimientos del Pedido</h4>
+        <h4 class="modal-title">Detalle de movimientos del pedido.</h4>
       </div>
 
       <div class="modal-body">
       <input type="hidden" name="idPedido" id="idPedido">
+      <input type="hidden" name="idtipoPedido" id="idtipoPedido">
+
       <div class="row">
           <div class="col-md-6">
             <div class="form-group">
@@ -228,7 +260,7 @@
         <div class="col-md-6">
             <div class="form-group">
               <label>Tipo Movimiento</label>
-              <select class="form-control" name="slctTipoMovimiento" required>
+              <select class="form-control" onChange="selectTipoMovimiento(this);" name="slctTipoMovimiento" id="slctTipoMovimiento" required>
               <?php foreach($tipoMovimiento as $row) :
                 if($row->id_tipomovimiento == 3){
                   echo "<option value='".$row->id_tipomovimiento."' selected>".$row->descripcion . "</option>";
@@ -240,7 +272,46 @@
             </div>
           </div>
         </div>
+        <!-- ACA HAY QUE USAR EL IFFF -->
 
+        <div id="divPedidoTecnico">
+        <hr>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Numero Servicio</label>
+                <input class="form-control" type="text" name="numeroServicio" id="numeroservicio">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Fecha Servicio</label>
+                <input class="form-control" type="date" name="fechaServicio" id="fechaServicio">
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+          <div class="col-md-6">
+              <div class="form-group">
+                <label>Pedido Tecnico</label>
+                <select class="form-control" name="idPedidoTecnico" id="idPedidoTecnico">
+                  <?php foreach($tipoPedidoTecnico as $row) :
+                      echo "<option value='".$row->id_pedidotecnico."'>".$row->descripcion . "</option>";
+                    endforeach;
+                  ?>
+                </select>
+              </div>
+            </div><div class="col-md-6">
+              <div class="form-group">
+                <label>Personal Retira</label>
+                <input class="form-control" type="text" name="retira" id="retira">
+              </div>
+            </div>
+          </div>
+<hr>
+        </div>
+        
         <div class="row">
           <div class="col-md-12">
           <div class="form-group">
@@ -309,7 +380,14 @@
 </div>
 <!-- /.content-wrapper -->
 <script>
+
+
+
+
+
+
 $(document).ready(function() {
+    $('#comprobanteModal').modal('show');
   $('#tablaPedidos').DataTable({
         "autoWidth": false,
         "lengthMenu": [
@@ -349,6 +427,8 @@ $(document).ready(function() {
 
 
 function MovimientosPedidos($id){
+document.getElementById('mensajeError').style.display = "none";  
+
   //alert($id);
   $("#modalMovimientos").modal();
   idPedido = $id;
@@ -367,28 +447,56 @@ function MovimientosPedidos($id){
       data:{idPedido:idPedido},
       success:function(data){
           if(data.status == 'ok'){
-
+            
+            $('#idtipoPedido').val(data.result[0].id_tipopedido);  
             $('#txtDescripcion').val(data.result[0].descripcion);
             $('#idPedido').val(data.result[0].id_pedido);
             $('#tituloPedido').val(data.result[0].titulo);
             $('#fechaAlta').val(data.result[0].fechaalta);
             $('#dependenciaOrigen').val(data.result[0].dependencia);
             $('#tipoPedido').val(data.result[0].tipopedido);
+            $('#solicita').val(data.result[0].solicita);
+
+             var tipoPedido = data.result[0].id_tipopedido;
+            if(tipoPedido == 2){
+              //divPedidoTecnico
+                
+                 document.getElementById('divPedidoTecnico').style.display = "block";  
+                 document.getElementById('divEstadoPedidoTecnico').style.display = "block";  
+                $('#numeroServicio').val(data.result[0].numeroservicio);
+                $('#fechaServicio').val(data.result[0].fechaservicio);
+                $('#pedidoTecnico').val(data.result[0].pedidotecnico);
+                $('#retira').val(data.result[0].retira);
+            }else{
+              document.getElementById('divPedidoTecnico').style.display = "none"; 
+            }
+             
+
           }else{
             console.log("error");
               alert("Ocurrio un problema");
           }
       }
   });
+ 
+}
+
+
+function selectTipoMovimiento(valor) {
+  //alert(valor.value);
+  
 }
 
 function NuevoMovimiento(){
+  document.getElementById('mensajeError').style.display = "none";  
   $("#modalNuevoMovimiento").modal();
+  
 }
 
 function FinalizarMovimiento($id){
+  idtipoPedido = document.getElementById('idtipoPedido').value;
+  if(idtipoPedido == 1){
   idPedido=$id;
-  console.log($id);
   $.ajax({
       type:'POST',
       url:"<?php echo base_url() . '/Pedidos/C_Pedidos/FinalizarMovimiento';?>",
@@ -408,6 +516,10 @@ function FinalizarMovimiento($id){
           }
        }
    });
+  }else{
+    document.getElementById('mensajeError').style.display = "block";  
+  }
+  
 }
 
 function CerrarTodo(){
